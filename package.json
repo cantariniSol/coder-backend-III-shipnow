@@ -1,0 +1,28 @@
+{
+  "name": "shipnow",
+  "version": "1.0.0",
+  "description": "src/app.js",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development node src/app.js",
+    "stg": "cross-env NODE_ENV=staging node src/app.js",
+    "prod": "cross-env NODE_ENV=production node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cantariniSol/coder-backend-III-shipnow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cantariniSol/coder-backend-III-shipnow/issues"
+  },
+  "homepage": "https://github.com/cantariniSol/coder-backend-III-shipnow#readme",
+  "dependencies": {
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.7.2"
+  }
+}
