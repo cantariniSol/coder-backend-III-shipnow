@@ -1,5 +1,19 @@
 import { productsRepository } from "../repositories/products.repository.js";
 
+const allowedCategories = ["hogar", "jardin", "oficina", "baño", "cocina", "vestidor", "gareage", "lavadero"];
+
+const validateCategory = (category) => {
+    const normalizedCategory = category?.trim().toLowerCase();
+
+    if (!normalizedCategory || !allowedCategories.includes(normalizedCategory)) {
+        const error = new Error(`Categoría inválida. Categorías permitidas: ${allowedCategories.join(", ")}`);
+        error.statusCode = 400;
+        throw error;
+    }
+
+    return normalizedCategory;
+};
+
 export const productsService = {
     getProducts: async () => {
         return productsRepository.findAll();
@@ -31,6 +45,8 @@ export const productsService = {
             throw error;
         }
 
+        const normalizedCategory = validateCategory(category);
+
         const existingProduct = await productsRepository.findByCode(code);
         if (existingProduct) {
             const error = new Error("Ya existe un producto con ese código");
@@ -38,10 +54,17 @@ export const productsService = {
             throw error;
         }
 
-        return productsRepository.create(productData);
+        return productsRepository.create({
+            ...productData,
+            category: normalizedCategory
+        });
     },
 
     updateProduct: async (id, updates) => {
+        if (updates.category) {
+            updates.category = validateCategory(updates.category);
+        }
+
         const product = await productsRepository.update(id, updates);
         if (!product) {
             const error = new Error("Producto no encontrado");
