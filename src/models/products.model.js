@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { PRODUCT_CATEGORIES } from "../constants/index.js";
 
 const productSchema = new mongoose.Schema(
     {
@@ -24,8 +25,8 @@ const productSchema = new mongoose.Schema(
         },
         category: {
             type: String,
-            enum: ["hogar", "jardin", "oficina", "baño", "cocina", "vestidor", "gareage", "lavadero"],
-            default: "customer",
+            enum: Object.values(PRODUCT_CATEGORIES),
+            default: PRODUCT_CATEGORIES.HOGAR,
             required: true,
         },
         code: {

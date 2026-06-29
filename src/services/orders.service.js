@@ -1,5 +1,6 @@
 import { ordersRepository } from "../repositories/orders.repository.js";
 import { productsService } from "./products.service.js";
+import { ORDER_STATUS, ORDER_PRIORITY } from "../constants/index.js";
 
 export const ordersService = {
     getOrders: async () => {
@@ -52,18 +53,24 @@ export const ordersService = {
 
         const total = items.reduce((accumulator, item) => accumulator + item.price * item.quantity, 0);
 
+        const validPriority = priority && Object.values(ORDER_PRIORITY).includes(priority) ? priority : ORDER_PRIORITY.NORMAL;
+
         const newOrder = {
             ...orderData,
             total,
-            status: "created",
-            priority: "normal"
+            status: ORDER_STATUS.CREATED,
+            priority: validPriority
         };
 
         return ordersRepository.create(newOrder);
     },
 
     updateOrderStatus: async (id, status) => {
-        //falta comprobar si el status contiene un valor valido
+        if (!Object.values(ORDER_STATUS).includes(status)) {
+            const error = new Error(`Estado inválido. Estados permitidos: ${Object.values(ORDER_STATUS).join(", ")}`);
+            error.statusCode = 400;
+            throw error;
+        }
 
         const order = await ordersRepository.updateStatus(id, status);
         if (!order) {

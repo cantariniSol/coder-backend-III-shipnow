@@ -1,6 +1,7 @@
 import { productsRepository } from "../repositories/products.repository.js";
+import { PRODUCT_STATUS, PRODUCT_CATEGORIES } from "../constants/index.js";
 
-const allowedCategories = ["hogar", "jardin", "oficina", "baño", "cocina", "vestidor", "gareage", "lavadero"];
+const allowedCategories = Object.values(PRODUCT_CATEGORIES);
 
 const validateCategory = (category) => {
     const normalizedCategory = category?.trim().toLowerCase();
