@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import config from "./config/index.js";
+import connectDB from "./config/db.js";
 import usersRouter from "./routes/users.routes.js";
 import storesRouter from "./routes/stores.router.js";
 import ordersRouter from "./routes/orders.router.js";
@@ -22,14 +23,23 @@ app.use(express.json());
 app.get("/", (req, res) => {
     res.json({
         status: "success",
-        message: "ShipNow API funcionando correctamente"
+        message: "ShipNow API está corriendo y lista para recibir peticiones",
+        environment: config.NODE_ENV,
+        port: config.PORT,
+        url: `http://localhost:${config.PORT}`
     });
 });
+
 //Ruta de salud del servidor
 app.get("/health", (req, res) => {
     res.json({
+        status: "success",
+        message: "Health check de ShipNow API",
+        url: `http://localhost:${config.PORT}`,
+        puerto: config.PORT,
         environment: config.NODE_ENV,
-        port: config.PORT
+        server: "conectado",
+        database: "conectado"
     });
 });
 
@@ -53,9 +63,22 @@ app.use((req, res) => {
 
 //Configuración del puerto
 const PORT = config.PORT;
-//Iniciamos el servidor
-app.listen(PORT, () => {
-    console.log(
-        `🚀 Server running in ${config.NODE_ENV} on port ${PORT}`
-    );
-});
+
+const startApp = async () => {
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running:`);
+            console.log(`- Environment: ${config.NODE_ENV}`);
+            console.log(`- Port: ${PORT}`);
+            console.log(`- URL: http://localhost:${PORT}`);
+            console.log(`- Conexión al servidor: exitosa`);
+            console.log(`- Conexión a MongoDB: exitosa`);
+        });
+    } catch (error) {
+        console.error("❌ Error al iniciar la aplicación:", error.message);
+        process.exit(1);
+    }
+};
+
+startApp();
