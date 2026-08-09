@@ -1,15 +1,15 @@
 # ShipNow API
 
-API RESTful desarrollada con Express.js y MongoDB para gestionar productos, usuarios, tiendas y órdenes de envío.
+API RESTful desarrollada con Express.js y MongoDB para gestionar productos, usuarios, tiendas y órdenes de envío. El proyecto incluye un módulo de mocks para desarrollo que permite generar datos de prueba de forma rápida y consistente.
 
 ---
 
 ## 📋 Requisitos previos
 
-- **Node.js** v18+
-- **npm** o **yarn**
-- **MongoDB** (local o en la nube, ej: MongoDB Atlas)
-- **Git**
+- Node.js 18+
+- npm o yarn
+- MongoDB local o en la nube
+- Git
 
 ---
 
@@ -30,183 +30,248 @@ npm install
 
 ### 3. Configurar variables de entorno
 
-Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+Crea los archivos de entorno según el ambiente que quieras usar:
+
+- `.env.dev` para desarrollo
+- `.env.stg` para staging
+- `.env.prod` para producción
+
+Ejemplo de variables:
 
 ```env
-# Base de datos
-MONGO_URL=mongodb://localhost:27017/shipnow
-# o usa MongoDB Atlas:
-# MONGO_URL=mongodb+srv://usuario:contraseña@cluster.mongodb.net/shipnow
-
-# Puerto
-PORT=8080
-
-# Entorno
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/shipnow
 NODE_ENV=development
 ```
 
+> El proyecto carga el archivo correcto según `NODE_ENV` mediante la configuración ubicada en `src/config`.
+
 ### 4. Ejecutar el servidor
 
-**Desarrollo:**
 ```bash
 npm run dev
 ```
 
-**Staging:**
 ```bash
 npm run stg
 ```
 
-**Producción:**
 ```bash
 npm run prod
 ```
 
-El servidor estará disponible en `http://localhost:8080`
+El servidor quedará disponible en:
+
+```text
+http://localhost:3000
+```
 
 ---
 
-## ✅ Verificar que el servidor está funcionando
+## ✅ Verificar funcionamiento
 
 ```bash
-# Revisar estado del servidor
-curl http://localhost:8080/
-# Respuesta esperada:
-# { "status": "success", "message": "ShipNow API funcionando correctamente" }
-# -----------------------
+curl http://localhost:3000/
+```
 
+Respuesta esperada:
+
+```json
+{
+  "status": "success",
+  "message": "ShipNow API está corriendo y lista para recibir peticiones"
+}
+```
+
+También podés verificar la salud del servidor:
+
+```bash
 curl http://localhost:3000/health
-# Respuesta esperada:
-# { "environment": "development", "port": "3000" }
 ```
 
 ---
 
 ## 📁 Estructura del proyecto
 
-```
+```text
 src/
-├── app.js                 # Entrada principal
+├── app.js
 ├── config/
-│   ├── db.js             # Conexión a MongoDB
-│   ├── env.loader.js     # Carga variables de entorno
-│   ├── env.validate.js   # Valida variables requeridas
-│   └── index.js          # Exporta configuración
+│   ├── db.js
+│   ├── env.loader.js
+│   ├── env.validate.js
+│   └── index.js
 ├── constants/
-│   └── index.js          # Constantes (roles, estados, categorías)
-├── models/               # Esquemas de MongoDB
-│   ├── products.model.js
-│   ├── users.model.js
-│   ├── stores.model.js
-│   └── orders.model.js
-├── repositories/         # Acceso a datos (queries)
-│   ├── products.repository.js
-│   ├── users.repository.js
-│   ├── stores.repository.js
-│   └── orders.repository.js
-├── services/             # Lógica de negocio
-│   ├── products.service.js
-│   ├── users.service.js
-│   ├── stores.service.js
-│   └── orders.service.js
-├── controllers/          # Manejo de requests/responses
-│   ├── products.controller.js
+│   └── index.js
+├── controllers/
 │   ├── users.controller.js
 │   ├── stores.controller.js
-│   └── orders.controller.js
-└── routes/               # Definición de rutas
-    ├── products.routes.js
+│   ├── products.controller.js
+│   ├── orders.controller.js
+│   └── mocks/
+│       ├── users.mocks.controller.js
+│       ├── stores.mocks.controller.js
+│       ├── products.mocks.controller.js
+│       └── orders.mocks.controller.js
+├── models/
+│   ├── users.model.js
+│   ├── stores.model.js
+│   ├── products.model.js
+│   └── orders.model.js
+├── mocks/
+│   ├── users.mocks.js
+│   ├── stores.mocks.js
+│   ├── products.mocks.js
+│   └── orders.mocks.js
+├── repositories/
+│   ├── users.repository.js
+│   ├── stores.repository.js
+│   ├── products.repository.js
+│   └── orders.repository.js
+├── services/
+│   ├── users.service.js
+│   ├── stores.service.js
+│   ├── products.service.js
+│   ├── orders.service.js
+│   └── mocks/
+│       ├── users.mocks.service.js
+│       ├── stores.mocks.service.js
+│       ├── products.mocks.service.js
+│       └── orders.mocks.service.js
+└── routes/
     ├── users.routes.js
     ├── stores.router.js
-    └── orders.router.js
+    ├── products.routes.js
+    ├── orders.router.js
+    └── mocks.router.js
 ```
 
 ---
 
 ## 🏗️ Arquitectura en capas
 
-La aplicación sigue una arquitectura de **capas separadas**:
+La aplicación sigue una arquitectura modular basada en capas:
 
-- **Controllers**: Manejan requests HTTP y envían responses
-- **Services**: Contienen la lógica de negocio y validaciones
-- **Repositories**: Se encargan del acceso a datos (queries)
-- **Models**: Definen los esquemas de la base de datos
+- Controllers: reciben los requests HTTP y responden con JSON
+- Services: contienen la lógica de negocio, validaciones y reglas de dominio
+- Repositories: encapsulan el acceso a MongoDB
+- Models: definen los esquemas y validaciones de Mongoose
 
-### ¿Por qué separar Service y Repository?
-
-**Repository maneja acceso a datos, Service maneja lógica de negocio; permite cambiar BD sin tocar reglas de negocio y facilita testing.**
+Esto permite mantener el código más claro, escalable y fácil de probar.
 
 ---
 
 ## 🔌 Endpoints principales
 
-### Productos
-```
-GET    /api/products         # Obtener todos los productos
-GET    /api/products/:pid    # Obtener producto por ID
-POST   /api/products         # Crear producto
-PUT    /api/products/:pid    # Actualizar producto
-DELETE /api/products/:pid    # Eliminar producto
-```
-
 ### Usuarios
-```
-GET    /api/users            # Obtener todos los usuarios
-GET    /api/users/:uid       # Obtener usuario por ID
-POST   /api/users            # Crear usuario
-PUT    /api/users/:uid       # Actualizar usuario
-DELETE /api/users/:uid       # Eliminar usuario
+
+```text
+GET    /users
+GET    /users/:uid
+POST   /users
+PUT    /users/:uid
+DELETE /users/:uid
 ```
 
 ### Tiendas
+
+```text
+GET    /stores
+GET    /stores/:sid
+POST   /stores
+PUT    /stores/:sid
+DELETE /stores/:sid
 ```
-GET    /api/stores           # Obtener todas las tiendas
-GET    /api/stores/:sid      # Obtener tienda por ID
-POST   /api/stores           # Crear tienda
-PUT    /api/stores/:sid      # Actualizar tienda
-DELETE /api/stores/:sid      # Eliminar tienda
+
+### Productos
+
+```text
+GET    /products
+GET    /products/:pid
+POST   /products
+PUT    /products/:pid
+DELETE /products/:pid
 ```
 
 ### Órdenes
-```
-GET    /api/orders           # Obtener todas las órdenes
-GET    /api/orders/:oid      # Obtener orden por ID
-POST   /api/orders           # Crear orden
-PUT    /api/orders/:oid      # Actualizar estado de orden
-DELETE /api/orders/:oid      # Eliminar orden
+
+```text
+GET    /orders
+GET    /orders/:oid
+POST   /orders
+PUT    /orders/:oid
+DELETE /orders/:oid
 ```
 
 ---
 
-## 📦 Dependencias
+## 🧪 Mocks para desarrollo
+
+El proyecto incorpora un módulo de mocks que solo está disponible en entornos distintos a producción.
+
+### Endpoints de mocks
+
+```text
+GET    /mocks/mockingUsers
+POST   /mocks/generateUsers
+
+GET    /mocks/mockingStores
+POST   /mocks/generateStores
+
+GET    /mocks/mockingProducts
+POST   /mocks/generateProducts
+
+GET    /mocks/mockingOrders
+POST   /mocks/generateOrders
+```
+
+### Qué hacen los mocks
+
+- Generan usuarios con datos falsos y contraseñas seguras
+- Generan tiendas vinculadas a usuarios existentes
+- Generan productos con stock y categorías aleatorias
+- Generan órdenes con cliente, tienda, productos y direcciones reales o simuladas
+- Calculan el total de la orden y reducen el stock de los productos involucrados
+
+> El flujo de órdenes está pensado para usar productos reales, validar stock y evitar que este llegue a valores negativos.
+
+---
+
+## 🔐 Seguridad y validaciones
+
+- Se usa `bcryptjs` para hashear contraseñas de usuarios mock
+- Se validan roles, categorías y datos obligatorios en los servicios
+- El stock de los productos se reduce solo si existe suficiente inventario
+- Se evita crear órdenes con datos incompletos o inválidos
+
+---
+
+## 📦 Dependencias principales
 
 ```json
 {
-  "cors": "^2.8.6",              // Control de CORS
-  "cross-env": "^10.1.0",        // Variables de entorno multiplataforma
-  "dotenv": "^17.4.2",           // Cargar .env
-  "express": "^5.2.1",           // Framework web
-  "mongoose": "^9.7.2"           // ODM para MongoDB
+  "@faker-js/faker": "^10.5.0",
+  "bcryptjs": "^3.0.3",
+  "cors": "^2.8.6",
+  "cross-env": "^10.1.0",
+  "dotenv": "^17.4.2",
+  "express": "^5.2.1",
+  "mongoose": "^9.7.2",
+  "nodemon": "^3.1.14"
 }
 ```
 
 ---
 
-
-## 🛠️ Desarrollo
-
-### Scripts disponibles
+## 🛠️ Scripts disponibles
 
 ```bash
-npm run dev      # Ejecutar en modo desarrollo
-npm run stg      # Ejecutar en modo staging
-npm run prod     # Ejecutar en modo producción
+npm run dev
+npm run stg
+npm run prod
 ```
 
 ---
-
-
-
 
 ## 👤 Autor
 
