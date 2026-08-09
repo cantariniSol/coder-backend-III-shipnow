@@ -38,16 +38,11 @@ const userSchema = new mongoose.Schema(
 );
 
 // 1. Hook antes de guardar: Encripta la contraseña solo si cambió o es nueva
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
 
-    try {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        next();
-    } catch (error) {
-        next(error);
-    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 // 2. Método personalizado: Compara la contraseña enviada con la guardada en BD
