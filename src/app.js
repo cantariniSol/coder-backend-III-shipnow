@@ -6,7 +6,7 @@ import usersRouter from "./routes/users.routes.js";
 import storesRouter from "./routes/stores.router.js";
 import ordersRouter from "./routes/orders.router.js";
 import productsRouter from "./routes/products.routes.js";
-
+import mocksRouter from "./routes/mocks.router.js";
 //Incializamos express
 const app = express();
 
@@ -51,6 +51,10 @@ app.use("/stores", storesRouter);
 app.use("/products", productsRouter);
 //Ruta para pedidos
 app.use("/orders", ordersRouter);
+//Ruta para mocks protegido para entornos de desarrollo
+if (process.env.NODE_ENV !== 'production') {
+    app.use('/mocks', mocksRouter);
+}
 
 
 // 3. Middleware para manejar rutas no encontradas
@@ -61,7 +65,7 @@ app.use((req, res) => {
     });
 });
 
-//Configuración del puerto
+//Mensaje de StartApp  por consola
 const PORT = config.PORT;
 
 const startApp = async () => {
@@ -72,8 +76,8 @@ const startApp = async () => {
             console.log(`- Environment: ${config.NODE_ENV}`);
             console.log(`- Port: ${PORT}`);
             console.log(`- URL: http://localhost:${PORT}`);
-            console.log(`- Conexión al servidor: exitosa`);
-            console.log(`- Conexión a MongoDB: exitosa`);
+            console.log(`- Conexión al servidor: Exitosa!`);
+            console.log(`- Conexión a MongoDB: Exitosa!`);
         });
     } catch (error) {
         console.error("❌ Error al iniciar la aplicación:", error.message);

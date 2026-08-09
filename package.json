@@ -1,6 +1,7 @@
 {
   "name": "shipnow",
   "version": "1.0.0",
+  "type": "module",
   "description": "src/app.js",
   "main": "src/app.js",
   "scripts": {
@@ -20,6 +21,8 @@
   },
   "homepage": "https://github.com/cantariniSol/coder-backend-III-shipnow#readme",
   "dependencies": {
+    "@faker-js/faker": "^10.5.0",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",

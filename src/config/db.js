@@ -8,7 +8,7 @@ const connectDB = async () => {
     }
 
     await mongoose.connect(mongoUri);
-    console.log("✅ MongoDB conectado");
+    console.log("- MongoDB conectado ✅");
 };
 
 export default connectDB;

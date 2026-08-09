@@ -1,4 +1,4 @@
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 
 const environment =
     process.env.NODE_ENV || "development";
@@ -11,4 +11,4 @@ const envFile = {
 
 dotenv.config({ path: envFile });
 
-module.exports = environment;
+export default environment;

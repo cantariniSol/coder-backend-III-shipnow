@@ -1,3 +1,10 @@
+const DOCUMENT_TYPES = Object.freeze({
+    DNI: "DNI",
+    CUIT: "CUIT",
+    CUIL: "CUIL",
+    PASSPORT: "PASSPORT"
+});
+
 // Roles de usuario
 const USER_ROLES = Object.freeze({
     ADMIN: 'ADMIN',
@@ -43,7 +50,8 @@ const ORDER_PRIORITY = Object.freeze({
     HIGH: 'high'
 });
 
-module.exports = {
+export {
+    DOCUMENT_TYPES,
     PRODUCT_STATUS,
     PRODUCT_CATEGORIES,
     USER_ROLES,

@@ -21,4 +21,4 @@ function validateEnv() {
     }
 }
 
-module.exports = validateEnv;
+export default validateEnv;
