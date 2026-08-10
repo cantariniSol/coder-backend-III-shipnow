@@ -17,7 +17,7 @@ export const usersRepository = {
         return UserModel.findByIdAndUpdate(
             id,
             updates,
-            { new: true, runValidators: true }
+            { returnDocument: "after", runValidators: true, context: "query" }
         );
     },
 

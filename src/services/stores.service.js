@@ -1,3 +1,4 @@
+import { createError } from "../errors/createError.js";
 import { storesRepository } from "../repositories/stores.repository.js";
 import { USER_ROLES } from "../constants/index.js";
 
@@ -8,12 +9,7 @@ export const storesService = {
 
     getStoreById: async (id) => {
         const store = await storesRepository.findById(id);
-        if (!store) {
-            const error = new Error("Tienda no encontrada");
-            error.statusCode = 404;
-            throw error;
-        }
-
+        if (!store) throw createError("STORE_NOT_FOUND");
         return store;
     },
 
@@ -21,22 +17,14 @@ export const storesService = {
         const { name, address, owner } = storeData;
 
         if (!name || !address || !owner) {
-            const error = new Error("Faltan datos obligatorios");
-            error.statusCode = 400;
-            throw error;
+            throw createError("VALIDATION_ERROR", "Faltan datos obligatorios");
         }
 
         const user = await storesRepository.findOwnerById(owner);
-        if (!user) {
-            const error = new Error("Usuario owner no encontrado");
-            error.statusCode = 404;
-            throw error;
-        }
+        if (!user) throw createError("USER_NOT_FOUND");
 
         if (user.role !== USER_ROLES.SELLER) {
-            const error = new Error(`El owner de una tienda debe tener rol ${USER_ROLES.SELLER}`);
-            error.statusCode = 400;
-            throw error;
+            throw createError("VALIDATION_ERROR", `El owner de una tienda debe tener rol ${USER_ROLES.SELLER}`);
         }
 
         return storesRepository.create(storeData);
@@ -44,23 +32,13 @@ export const storesService = {
 
     updateStore: async (id, updates) => {
         const store = await storesRepository.update(id, updates);
-        if (!store) {
-            const error = new Error("Tienda no encontrada");
-            error.statusCode = 404;
-            throw error;
-        }
-
+        if (!store) throw createError("STORE_NOT_FOUND");
         return store;
     },
 
     deleteStore: async (id) => {
         const store = await storesRepository.delete(id);
-        if (!store) {
-            const error = new Error("Tienda no encontrada");
-            error.statusCode = 404;
-            throw error;
-        }
-
+        if (!store) throw createError("STORE_NOT_FOUND");
         return store;
     }
 };

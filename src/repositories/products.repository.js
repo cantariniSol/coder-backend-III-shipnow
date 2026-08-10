@@ -2,7 +2,7 @@ import ProductModel from "../models/products.model.js";
 
 export const productsRepository = {
     findAll: async () => {
-        return ProductModel.find({ isActive: true }).populate("store");
+        return ProductModel.find().populate("store");
     },
 
     findById: async (id) => {

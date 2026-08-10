@@ -15,11 +15,11 @@ export const ordersRepository = {
         return OrderModel.create(orderData);
     },
 
-    updateStatus: async (id, status) => {
+    update: async (id, updates) => {
         return OrderModel.findByIdAndUpdate(
             id,
-            { status },
-            { new: true, runValidators: true }
+            updates,
+            { returnDocument: "after", runValidators: true, context: "query" }
         );
     },
 

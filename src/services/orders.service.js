@@ -1,6 +1,14 @@
+import { createError } from "../errors/createError.js";
 import { ordersRepository } from "../repositories/orders.repository.js";
 import { productsService } from "./products.service.js";
 import { ORDER_STATUS, ORDER_PRIORITY } from "../constants/index.js";
+
+const CANNOT_CANCEL_AFTER = [
+    ORDER_STATUS.ASSIGNED,
+    ORDER_STATUS.PICKED_UP,
+    ORDER_STATUS.IN_TRANSIT,
+    ORDER_STATUS.DELIVERED,
+];
 
 export const ordersService = {
     getOrders: async () => {
@@ -10,9 +18,7 @@ export const ordersService = {
     getOrderById: async (id) => {
         const order = await ordersRepository.findById(id);
         if (!order) {
-            const error = new Error("Pedido no encontrado");
-            error.statusCode = 404;
-            throw error;
+            throw createError("ORDER_NOT_FOUND");
         }
 
         return order;
@@ -22,30 +28,22 @@ export const ordersService = {
         const { customer, store, items, deliveryAddress, priority } = orderData;
 
         if (!customer || !store || !items || !deliveryAddress) {
-            const error = new Error("Faltan datos obligatorios");
-            error.statusCode = 400;
-            throw error;
+            throw createError("VALIDATION_ERROR", "Faltan datos obligatorios");
         }
 
         const userFound = await ordersRepository.findCustomerById(customer);
         if (!userFound) {
-            const error = new Error("Usuario no encontrado");
-            error.statusCode = 404;
-            throw error;
+            throw createError("USER_NOT_FOUND");
         }
 
         const storeFound = await ordersRepository.findStoreById(store)
         if (!storeFound) {
-            const error = new Error("Tienda no encontrada");
-            error.statusCode = 404;
-            throw error;
+            throw createError("STORE_NOT_FOUND");
         }
 
         for (const item of items) {
             if (!item.productId || !item.quantity || item.quantity <= 0) {
-                const error = new Error("Cada item debe incluir productId y una cantidad válida");
-                error.statusCode = 400;
-                throw error;
+                throw createError("ORDER_ITEMS_REQUIRED", "Cada item debe incluir productId y una cantidad válida");
             }
 
             await productsService.reduceStock(item.productId, item.quantity);
@@ -65,29 +63,61 @@ export const ordersService = {
         return ordersRepository.create(newOrder);
     },
 
-    updateOrderStatus: async (id, status) => {
-        if (!Object.values(ORDER_STATUS).includes(status)) {
-            const error = new Error(`Estado inválido. Estados permitidos: ${Object.values(ORDER_STATUS).join(", ")}`);
-            error.statusCode = 400;
-            throw error;
+    updateOrder: async (id, updates) => {
+        const order = await ordersRepository.findById(id);
+        if (!order) throw createError("ORDER_NOT_FOUND");
+
+        if (updates.status) {
+            if (!Object.values(ORDER_STATUS).includes(updates.status)) {
+                throw createError(
+                    "INVALID_ORDER_STATUS",
+                    `Estado inválido. Estados permitidos: ${Object.values(ORDER_STATUS).join(", ")}`
+                );
+            }
+
+            if (
+                updates.status === ORDER_STATUS.CANCELLED &&
+                CANNOT_CANCEL_AFTER.includes(order.status)
+            ) {
+                throw createError(
+                    "INVALID_ORDER_STATUS",
+                    `No se puede cancelar un pedido con estado ${order.status}`
+                );
+            }
         }
 
-        const order = await ordersRepository.updateStatus(id, status);
-        if (!order) {
-            const error = new Error("Pedido no encontrado");
-            error.statusCode = 404;
-            throw error;
+        if (updates.priority && !Object.values(ORDER_PRIORITY).includes(updates.priority)) {
+            throw createError(
+                "VALIDATION_ERROR",
+                `Prioridad inválida. Prioridades permitidas: ${Object.values(ORDER_PRIORITY).join(", ")}`
+            );
         }
 
-        return order;
+        if (updates.items) {
+            for (const item of updates.items) {
+                if (!item.productId || !item.quantity || item.quantity <= 0) {
+                    throw createError(
+                        "ORDER_ITEMS_REQUIRED",
+                        "Cada item debe incluir productId y una cantidad válida"
+                    );
+                }
+            }
+        }
+
+        const updateData = {
+            ...updates,
+            total: updates.items
+                ? updates.items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+                : updates.total ?? order.total
+        };
+
+        return ordersRepository.update(id, updateData);
     },
 
     deleteOrder: async (id) => {
         const order = await ordersRepository.delete(id);
         if (!order) {
-            const error = new Error("Pedido no encontrado");
-            error.statusCode = 404;
-            throw error;
+            throw createError("ORDER_NOT_FOUND");
         }
 
         return order;

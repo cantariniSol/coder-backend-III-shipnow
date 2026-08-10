@@ -3,8 +3,8 @@ import OrderModel from "../models/orders.model.js";
 import UserModel from "../models/users.model.js";
 import { getOrders, 
         getOrderById, 
-        createOrder, 
-        updateOrderStatus, 
+        createOrder,
+        updateOrder,  
         deleteOrder } from "../controllers/orders.controller.js";
 
 const router = Router();
@@ -15,7 +15,7 @@ router.get("/:oid", getOrderById);
 
 router.post("/", createOrder);
 
-router.put("/:oid/status", updateOrderStatus);
+router.put("/:oid", updateOrder);
 
 router.delete("/:oid", deleteOrder);
 

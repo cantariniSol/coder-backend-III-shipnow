@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import config from "./config/index.js";
 import connectDB from "./config/db.js";
+import { createError } from "./errors/createError.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 import usersRouter from "./routes/users.routes.js";
 import storesRouter from "./routes/stores.router.js";
 import ordersRouter from "./routes/orders.router.js";
@@ -44,26 +46,26 @@ app.get("/health", (req, res) => {
 });
 
 //Ruta para usuarios
-app.use("/users", usersRouter);
+app.use("/api/users", usersRouter);
 //Ruta para tiendas
-app.use("/stores", storesRouter);
+app.use("/api/stores", storesRouter);
 //Ruta para productos
-app.use("/products", productsRouter);
+app.use("/api/products", productsRouter);
 //Ruta para pedidos
-app.use("/orders", ordersRouter);
+app.use("/api/orders", ordersRouter);
 //Ruta para mocks protegido para entornos de desarrollo
 if (process.env.NODE_ENV !== 'production') {
-    app.use('/mocks', mocksRouter);
+    app.use('/api/mocks', mocksRouter);
 }
 
 
 // 3. Middleware para manejar rutas no encontradas
-app.use((req, res) => {
-    res.status(404).json({
-        status: "error",
-        message: "Ruta no encontrada"
-    });
+app.use((req, res, next) => {
+    next(createError("ROUTE_NOT_FOUND"));
 });
+
+// 4. Middleware para manejar errores
+app.use(errorHandler);
 
 //Mensaje de StartApp  por consola
 const PORT = config.PORT;
@@ -73,11 +75,9 @@ const startApp = async () => {
         await connectDB();
         app.listen(PORT, () => {
             console.log(`🚀 Server running:`);
-            console.log(`- Environment: ${config.NODE_ENV}`);
-            console.log(`- Port: ${PORT}`);
-            console.log(`- URL: http://localhost:${PORT}`);
-            console.log(`- Conexión al servidor: Exitosa!`);
-            console.log(`- Conexión a MongoDB: Exitosa!`);
+            console.log(`--- Environment: ${config.NODE_ENV}`);
+            console.log(`--- Port: ${PORT}`);
+            console.log(`--- URL: http://localhost:${PORT}`);
         });
     } catch (error) {
         console.error("❌ Error al iniciar la aplicación:", error.message);

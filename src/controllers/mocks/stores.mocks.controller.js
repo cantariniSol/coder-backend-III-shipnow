@@ -1,9 +1,10 @@
 import { storesMocksService } from "../../services/mocks/stores.mocks.service.js";
+import { parseMockQuantity } from "../../mocks/parseMockQuantity.js";
+import { createError } from "../../errors/createError.js";
 
-export const getMockingStores = async (req, res) => {
+export const getMockingStores = async (req, res, next) => {
     try {
-        
-        const quantity = Number(req.query.quantity) || 1;
+        const quantity = parseMockQuantity(req.query.quantity, 1);
         const stores = await storesMocksService.getMockStores(quantity);
 
         res.status(200).json({
@@ -11,26 +12,17 @@ export const getMockingStores = async (req, res) => {
             payload: stores
         });
     } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: error.message
-        });
+        next(error);
     }
 };
 
-export const generateStores = async (req, res) => {
+export const generateStores = async (req, res, next) => {
     try {
-        
-        if (!req.body || typeof req.body !== "object") {
-            return res.status(400).json({
-                status: "error",
-                message: "El body de la petición es obligatorio y debe ser JSON"
-            });
+        if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+            throw createError("VALIDATION_ERROR", "El body de la petición es obligatorio y debe ser un objeto JSON");
         }
 
-        const { stores = 5 } = req.body;
-        const quantity = Number(stores) || 5;
-
+        const quantity = parseMockQuantity(req.body.stores, 5);
         const createdStores = await storesMocksService.createMockStores(quantity);
 
         res.status(201).json({
@@ -40,9 +32,6 @@ export const generateStores = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: error.message
-        });
+        next(error);
     }
 };
