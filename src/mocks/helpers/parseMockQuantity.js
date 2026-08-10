@@ -1,4 +1,4 @@
-import { createError } from "../errors/createError.js";
+import { createError } from "../../errors/createError.js";
 
 const MAX_MOCK_QUANTITY = 50;
 

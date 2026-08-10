@@ -113,12 +113,20 @@ src/
 │       ├── stores.mocks.controller.js
 │       ├── products.mocks.controller.js
 │       └── orders.mocks.controller.js
+├── errors/
+│   ├── AppError.js
+│   ├── createError.js
+│   ├── errors.dictionary.js
+│   └── index.js
+├── middlewares/
+│   └── errorHandler.js
 ├── models/
 │   ├── users.model.js
 │   ├── stores.model.js
 │   ├── products.model.js
 │   └── orders.model.js
 ├── mocks/
+│   ├── parseMockQuantity.js
 │   ├── users.mocks.js
 │   ├── stores.mocks.js
 │   ├── products.mocks.js
@@ -128,6 +136,8 @@ src/
 │   ├── stores.repository.js
 │   ├── products.repository.js
 │   └── orders.repository.js
+├── responses/
+│   └── apiResponse.js
 ├── services/
 │   ├── users.service.js
 │   ├── stores.service.js
@@ -241,6 +251,9 @@ POST   /mocks/generateOrders
 ## 🔐 Seguridad y validaciones
 
 - Se usa `bcryptjs` para hashear contraseñas de usuarios mock
+- La configuración valida `PORT`, `MONGODB_URI` y `NODE_ENV` antes de iniciar
+- `db.js` comprueba la conexión a MongoDB y reporta fallos de conexión
+- Hay middleware global de errores en `src/middlewares/errorHandler.js`
 - Se validan roles, categorías y datos obligatorios en los servicios
 - El stock de los productos se reduce solo si existe suficiente inventario
 - Se evita crear órdenes con datos incompletos o inválidos
