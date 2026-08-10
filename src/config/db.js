@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import config from "./index.js";
+import logger from "../utils/logger.js";
 
 const connectDB = async () => {
     const mongoUri = config.MONGODB_URI;
@@ -13,9 +14,12 @@ const connectDB = async () => {
             serverSelectionTimeoutMS: 5000,
             connectTimeoutMS: 10000,
         });
-        console.log("✅ MongoDB conectado exitosamente!");
+        logger.info("🤖 Conexión a MongoDB exitosa!");
     } catch (error) {
-        console.error("❌ Error al conectar con MongoDB:", error.message);
+        logger.fatal("Error al conectar con MongoDB", {
+            error: error.message,
+            stack: error.stack,
+        });
         throw new Error(`Error de conexión a MongoDB: ${error.message}`);
     }
 };

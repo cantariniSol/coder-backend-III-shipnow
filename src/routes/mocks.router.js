@@ -1,8 +1,14 @@
+//Express Router for Mocks Routes
 import { Router } from "express";
+
+// Controllers Mocks
 import { getMockingUsers, generateUsers } from "../controllers/mocks/users.mocks.controller.js";
 import { getMockingStores, generateStores } from "../controllers/mocks/stores.mocks.controller.js";
 import { getMockingProducts, generateProducts } from "../controllers/mocks/products.mocks.controller.js";
 import { getMockingOrders, generateOrders } from "../controllers/mocks/orders.mocks.controller.js";
+
+// Controllers Logger
+import { testLogger } from "../controllers/logger/logger.controller.js";
 
 
 const router = Router();
@@ -22,5 +28,8 @@ router.post("/generateProducts", generateProducts);
 //Orders Mocks Routes
 router.get("/mockingOrders", getMockingOrders);
 router.post("/generateOrders", generateOrders);
+
+//Logger Test Route
+router.get("/loggerTest", testLogger);
 
 export default router;

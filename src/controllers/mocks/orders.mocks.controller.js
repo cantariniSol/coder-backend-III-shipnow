@@ -1,5 +1,5 @@
 import { ordersMocksService } from "../../services/mocks/orders.mocks.service.js";
-import { parseMockQuantity } from "../../mocks/helpers/parseMockQuantity.js";
+import { parseMockQuantity } from "../../utils/mocks.validate.js";
 import { createError } from "../../errors/createError.js";
 
 export const getMockingOrders = async (req, res, next) => {

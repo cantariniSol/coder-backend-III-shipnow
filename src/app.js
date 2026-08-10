@@ -1,14 +1,23 @@
-import express from "express";
+// External dependencies
 import cors from "cors";
+import express from "express";
+
+// Configuration / Utilities
 import config from "./config/index.js";
 import connectDB from "./config/db.js";
+import logger from "./utils/logger.js";
+
+
+// Errors & middlewares
 import { createError } from "./errors/createError.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
-import usersRouter from "./routes/users.routes.js";
-import storesRouter from "./routes/stores.router.js";
+
+// Routes
+import mocksRouter from "./routes/mocks.router.js";
 import ordersRouter from "./routes/orders.router.js";
 import productsRouter from "./routes/products.routes.js";
-import mocksRouter from "./routes/mocks.router.js";
+import storesRouter from "./routes/stores.router.js";
+import usersRouter from "./routes/users.routes.js";
 //Incializamos express
 const app = express();
 
@@ -73,14 +82,19 @@ const PORT = config.PORT;
 const startApp = async () => {
     try {
         await connectDB();
+
         app.listen(PORT, () => {
-            console.log(`🚀 Server running:`);
-            console.log(`--- Environment: ${config.NODE_ENV}`);
-            console.log(`--- Port: ${PORT}`);
-            console.log(`--- URL: http://localhost:${PORT}`);
+            logger.info(`🚀 Server running:`);
+            logger.info(`--- Environment: ${config.NODE_ENV}`);
+            logger.info(`--- Port: ${PORT}`);
+            logger.info(`--- URL: http://localhost:${PORT}`);
         });
     } catch (error) {
-        console.error("❌ Error al iniciar la aplicación:", error.message);
+        logger.fatal("Error al iniciar la aplicación", {
+            error: error.message,
+            stack: error.stack,
+        }); 
+        
         process.exit(1);
     }
 };

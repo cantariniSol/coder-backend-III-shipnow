@@ -126,11 +126,10 @@ src/
 │   ├── products.model.js
 │   └── orders.model.js
 ├── mocks/
-│   ├── parseMockQuantity.js
 │   ├── users.mocks.js
 │   ├── stores.mocks.js
 │   ├── products.mocks.js
-│   └── orders.mocks.js
+│   ├── orders.mocks.js
 ├── repositories/
 │   ├── users.repository.js
 │   ├── stores.repository.js
@@ -148,12 +147,15 @@ src/
 │       ├── stores.mocks.service.js
 │       ├── products.mocks.service.js
 │       └── orders.mocks.service.js
-└── routes/
-    ├── users.routes.js
-    ├── stores.router.js
-    ├── products.routes.js
-    ├── orders.router.js
-    └── mocks.router.js
+├── routes/
+│   ├── users.routes.js
+│   ├── stores.router.js
+│   ├── products.routes.js
+│   ├── orders.router.js
+│   └── mocks.router.js
+└── utils/
+    ├── mocks.validate.js
+    └── logger.js
 ```
 
 ---
@@ -166,8 +168,43 @@ La aplicación sigue una arquitectura modular basada en capas:
 - Services: contienen la lógica de negocio, validaciones y reglas de dominio
 - Repositories: encapsulan el acceso a MongoDB
 - Models: definen los esquemas y validaciones de Mongoose
+- Middlewares: gestionan el flujo y el manejo global de errores
+- Utils: contiene herramientas transversales como el logger centralizado
 
-Esto permite mantener el código más claro, escalable y fácil de probar.
+La separación en capas permite mantener el código más claro, escalable y fácil de probar. El logger centralizado evita `console.log` dispersos y facilita la observabilidad del servidor.
+
+---
+
+## 📝 Logging y monitoreo básico
+
+ShipNow usa `winston` como logger centralizado. El sistema registra eventos importantes en distintos niveles:
+
+- `debug`
+- `http`
+- `info`
+- `warning`
+- `error`
+- `fatal`
+
+Los logs se escriben en consola y en archivos rotados bajo `logs/`:
+
+- `logs/application-YYYY-MM-DD.log` para `info` y niveles superiores
+- `logs/error-YYYY-MM-DD.log` para `error` y `fatal`
+
+El comportamiento cambia según el entorno:
+
+- En desarrollo (`NODE_ENV=development`), se muestran logs desde `debug`.
+- En producción (`NODE_ENV=production`), se registran solo niveles más relevantes como `info`, `warning`, `error` y `fatal`.
+
+### Endpoint de prueba del logger
+
+Para verificar la configuración del logger ejecuta:
+
+```bash
+curl -i http://localhost:3000/api/mocks/loggerTest
+```
+
+Esta ruta está disponible solo en entornos distintos a producción.
 
 ---
 
