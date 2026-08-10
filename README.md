@@ -44,7 +44,7 @@ MONGODB_URI=mongodb://localhost:27017/shipnow
 NODE_ENV=development
 ```
 
-> El proyecto carga el archivo correcto según `NODE_ENV` mediante la configuración ubicada en `src/config`.
+> El proyecto carga el archivo correcto según `NODE_ENV` mediante la configuración ubicada en `src/config` y valida los valores antes de iniciar.
 
 ### 4. Ejecutar el servidor
 
@@ -232,6 +232,7 @@ POST   /mocks/generateOrders
 - Generan productos con stock y categorías aleatorias
 - Generan órdenes con cliente, tienda, productos y direcciones reales o simuladas
 - Calculan el total de la orden y reducen el stock de los productos involucrados
+- Validan la cantidad solicitada y solo funcionan en entornos de desarrollo
 
 > El flujo de órdenes está pensado para usar productos reales, validar stock y evitar que este llegue a valores negativos.
 
