@@ -4,8 +4,7 @@ node_modules/
 # Variables de entorno
 .env
 .env.dev
-.env.stg
-.env.prod
+.env.test
 
 # Logs
 logs/

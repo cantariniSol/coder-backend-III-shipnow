@@ -5,8 +5,7 @@ const environment =
 
 const envFile = {
     development: ".env.dev",
-    staging: ".env.stg",
-    production: ".env.prod",
+    test: ".env.test",
 }[environment];
 
 dotenv.config({ path: envFile });

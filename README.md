@@ -33,13 +33,13 @@ npm install
 Crea los archivos de entorno según el ambiente que quieras usar:
 
 - `.env.dev` para desarrollo
-- `.env.stg` para staging
-- `.env.prod` para producción
+- `.env.test` para testing
+
 
 Ejemplo de variables:
 
 ```env
-PORT=3000
+PORT=3001
 MONGODB_URI=mongodb://localhost:27017/shipnow
 NODE_ENV=development
 ```
@@ -63,7 +63,7 @@ npm run prod
 El servidor quedará disponible en:
 
 ```text
-http://localhost:3000
+http://localhost:3001
 ```
 
 ---
@@ -71,7 +71,7 @@ http://localhost:3000
 ## ✅ Verificar funcionamiento
 
 ```bash
-curl http://localhost:3000/
+curl http://localhost:3001/
 ```
 
 Respuesta esperada:
@@ -86,7 +86,7 @@ Respuesta esperada:
 También podés verificar la salud del servidor:
 
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:30001/health
 ```
 
 ---
@@ -96,7 +96,7 @@ curl http://localhost:3000/health
 La API está documentada con Swagger y expondrá una interfaz interactiva en:
 
 ```text
-http://localhost:3000/api/docs
+http://localhost:30001/api/docs
 ```
 
 En Swagger vas a encontrar los módulos documentados:
@@ -222,7 +222,7 @@ El comportamiento cambia según el entorno:
 Para verificar la configuración del logger ejecuta:
 
 ```bash
-curl -i http://localhost:3000/api/mocks/loggerTest
+curl -i http://localhost:3001/api/mocks/loggerTest
 ```
 
 Esta ruta está disponible solo en entornos distintos a producción.
@@ -338,10 +338,8 @@ POST   /mocks/generateOrders
 ## 🛠️ Scripts disponibles
 
 ```bash
-npm run local
 npm run dev
-npm run stg
-npm run prod
+npm run test
 ```
 
 ---

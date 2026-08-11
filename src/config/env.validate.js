@@ -18,7 +18,7 @@ function validateEnv() {
         throw new Error("❌ PORT debe ser un número entero entre 1 y 65535");
     }
 
-    const validEnvironments = ["local", "development", "staging", "production"];
+    const validEnvironments = ["development", "test"];
     if (!validEnvironments.includes(process.env.NODE_ENV)) {
         throw new Error(
             `❌ NODE_ENV inválido. Valores permitidos: ${validEnvironments.join(", ")}`
