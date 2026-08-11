@@ -1,0 +1,193 @@
+paths:
+  /api/stores:
+    get:
+      tags:
+        - Stores
+      summary: Obtener todas las tiendas
+      description: Recupera todas las tiendas registradas.
+      responses:
+        '200':
+          description: Lista de tiendas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Store'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - Stores
+      summary: Crear tienda
+      description: Registra una nueva tienda asociada a un owner SELLER.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - address
+                - owner
+              properties:
+                name:
+                  type: string
+                  example: Tienda Central
+                address:
+                  type: string
+                  example: Calle Falsa 123
+                owner:
+                  type: string
+                  example: 6a7801b39a7368e7f463bb48
+                isActive:
+                  type: boolean
+                  example: true
+      responses:
+        '201':
+          description: Tienda creada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: '#/components/schemas/Store'
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Usuario owner no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/stores/{storeId}:
+    parameters:
+      - name: storeId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID de la tienda
+    get:
+      tags:
+        - Stores
+      summary: Obtener tienda por ID
+      responses:
+        '200':
+          description: Tienda encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: '#/components/schemas/Store'
+        '400':
+          description: ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Tienda no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Stores
+      summary: Actualizar tienda
+      description: Modifica una tienda existente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                owner:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        '200':
+          description: Tienda actualizada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: '#/components/schemas/Store'
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Tienda no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Stores
+      summary: Eliminar tienda
+      description: Elimina una tienda por su ID.
+      responses:
+        '200':
+          description: Tienda eliminada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: '#/components/schemas/Store'
+        '400':
+          description: ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Tienda no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

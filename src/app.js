@@ -1,12 +1,17 @@
 // External dependencies
 import cors from "cors";
 import express from "express";
+import swaggerUi from "swagger-ui-express";
 
-// Configuration / Utilities
+// Configuration 
 import config from "./config/index.js";
 import connectDB from "./config/db.js";
+
+// Utilities 
 import logger from "./utils/logger.js";
 
+// Swagger documentation
+import { swaggerSpecs } from "./docs/swagger.config.js";
 
 // Errors & middlewares
 import { createError } from "./errors/createError.js";
@@ -18,8 +23,15 @@ import ordersRouter from "./routes/orders.router.js";
 import productsRouter from "./routes/products.routes.js";
 import storesRouter from "./routes/stores.router.js";
 import usersRouter from "./routes/users.routes.js";
+
+
+
+
 //Incializamos express
 const app = express();
+
+// Configuración de Swagger
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 
 //Middleware

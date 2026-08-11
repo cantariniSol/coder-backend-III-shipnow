@@ -5,6 +5,7 @@
   "description": "src/app.js",
   "main": "src/app.js",
   "scripts": {
+    "local": "cross-env NODE_ENV=local node src/app.js",
     "dev": "cross-env NODE_ENV=development nodemon src/app.js",
     "stg": "cross-env NODE_ENV=staging node src/app.js",
     "prod": "cross-env NODE_ENV=production node src/app.js"
@@ -28,6 +29,8 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mongoose": "^9.7.2",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0",
     "winston-daily-rotate-file": "^5.0.0"
   },

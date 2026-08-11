@@ -91,7 +91,28 @@ curl http://localhost:3000/health
 
 ---
 
-## 📁 Estructura del proyecto
+## � Documentación con Swagger
+
+La API está documentada con Swagger y expondrá una interfaz interactiva en:
+
+```text
+http://localhost:3000/api/docs
+```
+
+En Swagger vas a encontrar los módulos documentados:
+
+- Users
+- Products
+- Stores
+- Orders
+- Mocks
+- Logger
+
+Desde esa ruta podés abrir la documentación, revisar cada endpoint y probar las peticiones directamente.
+
+---
+
+## �📁 Estructura del proyecto
 
 ```text
 src/
@@ -156,7 +177,7 @@ src/
 └── utils/
     ├── mocks.validate.js
     └── logger.js
-```
+````
 
 ---
 
@@ -317,6 +338,7 @@ POST   /mocks/generateOrders
 ## 🛠️ Scripts disponibles
 
 ```bash
+npm run local
 npm run dev
 npm run stg
 npm run prod
