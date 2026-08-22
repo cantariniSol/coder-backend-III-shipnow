@@ -1,266 +1,5 @@
 components:
   schemas:
-    UserCreate:
-      type: object
-      required:
-        - firstName
-        - lastName
-        - email
-        - password
-      properties:
-        firstName:
-          type: string
-          example: Juan
-        lastName:
-          type: string
-          example: Pérez
-        email:
-          type: string
-          format: email
-          example: juan.perez@gmail.com
-        password:
-          type: string
-          format: password
-          example: MiPassword123
-        role:
-          type: string
-          enum:
-            - ADMIN
-            - CUSTOMER
-            - SELLER
-            - SUPPORT
-          example: CUSTOMER
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              type:
-                type: string
-                example: PASSPORT
-              number:
-                type: string
-                example: AB123456
-    UserUpdate:
-      type: object
-      properties:
-        firstName:
-          type: string
-          example: Juan
-        lastName:
-          type: string
-          example: Pérez
-        email:
-          type: string
-          format: email
-          example: juan.perez23@gmail.com
-        password:
-          type: string
-          format: password
-          example: NuevaPassword123
-        role:
-          type: string
-          enum:
-            - ADMIN
-            - CUSTOMER
-            - SELLER
-            - SUPPORT
-          example: SELLER
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              type:
-                type: string
-              number:
-                type: string
-    User:
-      allOf:
-        - $ref: "#/components/schemas/UserCreate"
-        - type: object
-          properties:
-            _id:
-              type: string
-              example: 65f987654321fedcba543210
-            createdAt:
-              type: string
-              format: date-time
-              example: "2026-08-10T18:30:00.000Z"
-            updatedAt:
-              type: string
-              format: date-time
-              example: "2026-08-10T18:30:00.000Z"
-    Product:
-      type: object
-      required:
-        - name
-        - price
-        - stock
-        - category
-        - code
-        - store
-      properties:
-        name:
-          type: string
-          example: Unbranded Marble Tuna2
-        description:
-          type: string
-          example: New2 indigo Table...
-        price:
-          type: number
-          format: float
-          example: 34674.09
-        stock:
-          type: integer
-          example: 10
-        category:
-          type: string
-          example: hogar
-        code:
-          type: string
-          example: 192503
-        isActive:
-          type: boolean
-          example: false
-        store:
-          type: string
-          example: 6a7823b539faf08b4079b1c5
-    Store:
-      type: object
-      required:
-        - name
-        - address
-        - owner
-      properties:
-        name:
-          type: string
-          example: Tienda Central
-        address:
-          type: string
-          example: Calle Falsa 123
-        owner:
-          type: string
-          example: 6a7801b39a7368e7f463bb48
-        isActive:
-          type: boolean
-          example: true
-    OrderItem:
-      type: object
-      required:
-        - name
-        - quantity
-        - price
-      properties:
-        productId:
-          type: string
-          example: 6a781a5edb1324f3dddb410a
-        name:
-          type: string
-          example: Unbranded Marble Tuna
-        quantity:
-          type: integer
-          example: 2
-        price:
-          type: number
-          format: float
-          example: 34674.99
-    OrderCreate:
-      type: object
-      required:
-        - customer
-        - store
-        - items
-        - deliveryAddress
-      properties:
-        customer:
-          type: string
-          example: 6a7801b29a7368e7f463bb47
-        store:
-          type: string
-          example: 65f987654321fedcba543210
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderItem"
-        deliveryAddress:
-          type: string
-          example: 970 The Croft Suite 708
-        priority:
-          type: string
-          enum:
-            - low
-            - normal
-            - high
-          example: low
-    OrderUpdate:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderItem"
-        deliveryAddress:
-          type: string
-          example: 970 The Croft Suite 708
-        status:
-          type: string
-          enum:
-            - created
-            - assigned
-            - picked_up
-            - in_transit
-            - delivered
-            - cancelled
-          example: created
-        priority:
-          type: string
-          enum:
-            - low
-            - normal
-            - high
-          example: high
-    Order:
-      type: object
-      properties:
-        _id:
-          type: string
-          example: 65f987654321fedcba543211
-        customer:
-          type: string
-          example: 6a7801b29a7368e7f463bb47
-        store:
-          type: string
-          example: 65f987654321fedcba543210
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderItem"
-        deliveryAddress:
-          type: string
-          example: 970 The Croft Suite 708
-        total:
-          type: number
-          format: float
-          example: 26000
-        status:
-          type: string
-          example: created
-        priority:
-          type: string
-          example: low
-        proof:
-          type: object
-          nullable: true
-          example: null
-        createdAt:
-          type: string
-          format: date-time
-          example: "2026-08-10T18:30:00.000Z"
-        updatedAt:
-          type: string
-          format: date-time
-          example: "2026-08-10T18:30:00.000Z"
     SuccessResponse:
       type: object
       properties:
@@ -269,6 +8,20 @@ components:
           example: success
         payload:
           type: object
+
+    ErrorDetail:
+      type: object
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          example: El body de la petición es obligatorio y debe ser un objeto JSON
+        details:
+          nullable: true
+          example: null
+
     ErrorResponse:
       type: object
       properties:
@@ -279,13 +32,4 @@ components:
           type: string
           example: Datos inválidos
         error:
-          type: object
-          properties:
-            code:
-              type: string
-              example: VALIDATION_ERROR
-            message:
-              type: string
-              example: El body de la petición es obligatorio y debe ser un objeto JSON
-            details:
-              nullable: true
+          $ref: "#/components/schemas/ErrorDetail"

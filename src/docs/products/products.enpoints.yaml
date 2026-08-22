@@ -6,7 +6,7 @@ paths:
       summary: Obtener todos los productos
       description: Recupera todos los productos disponibles.
       responses:
-        '200':
+        "200":
           description: Lista de productos
           content:
             application/json:
@@ -19,13 +19,14 @@ paths:
                   payload:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Product'
-        '500':
+                      $ref: "#/components/schemas/Product"
+        "500":
           description: Error interno del servidor
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
     post:
       tags:
         - Products
@@ -36,9 +37,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: "#/components/schemas/ProductCreate"
       responses:
-        '201':
+        "201":
           description: Producto creado
           content:
             application/json:
@@ -49,33 +50,36 @@ paths:
                     type: string
                     example: success
                   payload:
-                    $ref: '#/components/schemas/Product'
-        '400':
+                    $ref: "#/components/schemas/Product"
+        "400":
           description: Error de validación
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
           description: Código de producto duplicado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /api/products/{productId}:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/products/{pid}:
     parameters:
-      - name: productId
+      - name: pid
         in: path
         required: true
         schema:
           type: string
         description: ID del producto
+
     get:
       tags:
         - Products
       summary: Obtener producto por ID
+      description: Recupera un producto específico a partir de su ID.
       responses:
-        '200':
+        "200":
           description: Producto encontrado
           content:
             application/json:
@@ -86,19 +90,20 @@ paths:
                     type: string
                     example: success
                   payload:
-                    $ref: '#/components/schemas/Product'
-        '400':
+                    $ref: "#/components/schemas/Product"
+        "400":
           description: ID inválido
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Producto no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
     put:
       tags:
         - Products
@@ -109,27 +114,9 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                description:
-                  type: string
-                price:
-                  type: number
-                  format: float
-                stock:
-                  type: integer
-                category:
-                  type: string
-                code:
-                  type: string
-                isActive:
-                  type: boolean
-                store:
-                  type: string
+              $ref: "#/components/schemas/ProductUpdate"
       responses:
-        '200':
+        "200":
           description: Producto actualizado
           content:
             application/json:
@@ -140,26 +127,27 @@ paths:
                     type: string
                     example: success
                   payload:
-                    $ref: '#/components/schemas/Product'
-        '400':
+                    $ref: "#/components/schemas/Product"
+        "400":
           description: Error de validación
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Producto no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
     delete:
       tags:
         - Products
       summary: Eliminar producto
       description: Elimina un producto existente.
       responses:
-        '200':
+        "200":
           description: Producto eliminado
           content:
             application/json:
@@ -170,16 +158,16 @@ paths:
                     type: string
                     example: success
                   payload:
-                    $ref: '#/components/schemas/Product'
-        '400':
+                    $ref: "#/components/schemas/Product"
+        "400":
           description: ID inválido
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Producto no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"

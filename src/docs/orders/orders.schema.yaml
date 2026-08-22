@@ -1,0 +1,121 @@
+components:
+  schemas:
+    OrderItem:
+      type: object
+      required:
+        - name
+        - quantity
+        - price
+      properties:
+        productId:
+          type: string
+          example: 6a781a5edb1324f3dddb410a
+        name:
+          type: string
+          example: Unbranded Marble Tuna
+        quantity:
+          type: integer
+          example: 2
+        price:
+          type: number
+          format: float
+          example: 34674.99
+
+    OrderCreate:
+      type: object
+      required:
+        - customer
+        - store
+        - items
+        - deliveryAddress
+      properties:
+        customer:
+          type: string
+          example: 6a7801b29a7368e7f463bb47
+        store:
+          type: string
+          example: 65f987654321fedcba543210
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        deliveryAddress:
+          type: string
+          example: 970 The Croft Suite 708
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+          example: low
+
+    OrderUpdate:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        deliveryAddress:
+          type: string
+          example: 970 The Croft Suite 708
+        status:
+          type: string
+          enum:
+            - created
+            - assigned
+            - picked_up
+            - in_transit
+            - delivered
+            - cancelled
+          example: created
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+          example: high
+
+    Order:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 65f987654321fedcba543211
+        customer:
+          type: string
+          example: 6a7801b29a7368e7f463bb47
+        store:
+          type: string
+          example: 65f987654321fedcba543210
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        deliveryAddress:
+          type: string
+          example: 970 The Croft Suite 708
+        total:
+          type: number
+          format: float
+          example: 26000
+        status:
+          type: string
+          example: created
+        priority:
+          type: string
+          example: low
+        proof:
+          type: object
+          nullable: true
+          example: null
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-08-10T18:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-08-10T18:30:00.000Z"

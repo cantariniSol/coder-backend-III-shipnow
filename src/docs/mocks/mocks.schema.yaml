@@ -1,0 +1,99 @@
+components:
+  schemas:
+    MockQuantityQuery:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 1
+          example: 5
+
+    GenerateUsersMockRequest:
+      type: object
+      properties:
+        users:
+          type: integer
+          minimum: 1
+          maximum: 50
+          example: 1
+
+    GenerateStoresMockRequest:
+      type: object
+      properties:
+        stores:
+          type: integer
+          minimum: 1
+          maximum: 50
+          example: 5
+
+    GenerateProductsMockRequest:
+      type: object
+      properties:
+        products:
+          type: integer
+          minimum: 1
+          maximum: 50
+          example: 1
+
+    GenerateOrdersMockRequest:
+      type: object
+      properties:
+        orders:
+          type: integer
+          minimum: 1
+          maximum: 50
+          example: 1
+
+    MockUsersGeneratedResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: object
+          properties:
+            users:
+              type: integer
+              example: 1
+
+    MockStoresGeneratedResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: object
+          properties:
+            stores:
+              type: integer
+              example: 5
+
+    MockProductsGeneratedResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: object
+          properties:
+            products:
+              type: integer
+              example: 1
+
+    MockOrdersGeneratedResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        payload:
+          type: object
+          properties:
+            orders:
+              type: integer
+              example: 1

@@ -1,0 +1,28 @@
+paths:
+  /:
+    get:
+      tags:
+        - Health-check
+      summary: Estado general de la API
+      description: Verifica que la API esté corriendo y devuelve información básica del entorno.
+      responses:
+        "200":
+          description: API operativa
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RootHealthResponse"
+
+  /health:
+    get:
+      tags:
+        - Health-check
+      summary: Health check del servicio
+      description: Verifica el estado del servidor y la conectividad general reportada por la aplicación.
+      responses:
+        "200":
+          description: Estado del servicio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DetailedHealthResponse"

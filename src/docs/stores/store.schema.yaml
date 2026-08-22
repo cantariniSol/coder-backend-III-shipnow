@@ -1,0 +1,54 @@
+components:
+  schemas:
+    StoreCreate:
+      type: object
+      required:
+        - name
+        - address
+        - owner
+      properties:
+        name:
+          type: string
+          example: Tienda Central
+        address:
+          type: string
+          example: Calle Falsa 123
+        owner:
+          type: string
+          example: 6a7801b39a7368e7f463bb48
+        isActive:
+          type: boolean
+          example: true
+
+    StoreUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Tienda Central Norte
+        address:
+          type: string
+          example: Avenida Siempre Viva 742
+        owner:
+          type: string
+          example: 6a7801b39a7368e7f463bb48
+        isActive:
+          type: boolean
+          example: true
+
+    Store:
+      allOf:
+        - $ref: "#/components/schemas/StoreCreate"
+        - type: object
+          properties:
+            _id:
+              type: string
+              example: 65f987654321fedcba543210
+            createdAt:
+              type: string
+              format: date-time
+              example: "2026-08-10T18:30:00.000Z"
+            updatedAt:
+              type: string
+              format: date-time
+              example: "2026-08-10T18:30:00.000Z"

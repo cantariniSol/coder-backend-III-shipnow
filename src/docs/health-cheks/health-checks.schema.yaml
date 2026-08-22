@@ -1,0 +1,45 @@
+components:
+  schemas:
+    RootHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: ShipNow API está corriendo y lista para recibir peticiones
+        environment:
+          type: string
+          example: development
+        port:
+          type: string
+          example: "3001"
+        url:
+          type: string
+          example: http://localhost:3001
+
+    DetailedHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Health check de ShipNow API
+        url:
+          type: string
+          example: http://localhost:3001
+        puerto:
+          type: string
+          example: "3001"
+        environment:
+          type: string
+          example: development
+        server:
+          type: string
+          example: conectado
+        database:
+          type: string
+          example: conectado

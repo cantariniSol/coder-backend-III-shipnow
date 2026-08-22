@@ -1,0 +1,11 @@
+components:
+  schemas:
+    LoggerTestResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Logger test ejecutado. Revisa consola y archivo de logs.

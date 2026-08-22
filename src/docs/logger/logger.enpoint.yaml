@@ -1,0 +1,20 @@
+paths:
+  /api/mocks/loggerTest:
+    get:
+      tags:
+        - Logger
+      summary: Prueba de logger
+      description: Ejecuta mensajes de prueba en todos los niveles del logger y devuelve una confirmación.
+      responses:
+        "200":
+          description: Logger ejecutado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoggerTestResponse"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

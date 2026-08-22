@@ -8,6 +8,7 @@ paths:
       parameters:
         - name: quantity
           in: query
+          required: false
           schema:
             type: integer
             minimum: 1
@@ -15,7 +16,7 @@ paths:
             default: 1
           description: Cantidad de usuarios mock a generar
       responses:
-        '200':
+        "200":
           description: Usuarios mock generados
           content:
             application/json:
@@ -28,20 +29,14 @@ paths:
                   payload:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        firstName:
-                          type: string
-                        lastName:
-                          type: string
-                        email:
-                          type: string
-        '400':
+                      $ref: "#/components/schemas/User"
+        "400":
           description: Cantidad inválida
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/mocks/generateUsers:
     post:
       tags:
@@ -53,34 +48,21 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                users:
-                  type: integer
-                  example: 1
+              $ref: "#/components/schemas/GenerateUsersMockRequest"
       responses:
-        '201':
+        "201":
           description: Usuarios creados
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  payload:
-                    type: object
-                    properties:
-                      users:
-                        type: integer
-                        example: 1
-        '400':
+                $ref: "#/components/schemas/MockUsersGeneratedResponse"
+        "400":
           description: Body inválido o cantidad inválida
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/mocks/mockingStores:
     get:
       tags:
@@ -90,6 +72,7 @@ paths:
       parameters:
         - name: quantity
           in: query
+          required: false
           schema:
             type: integer
             minimum: 1
@@ -97,7 +80,7 @@ paths:
             default: 1
           description: Cantidad de tiendas mock a generar
       responses:
-        '200':
+        "200":
           description: Tiendas mock generadas
           content:
             application/json:
@@ -110,18 +93,14 @@ paths:
                   payload:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        address:
-                          type: string
-        '400':
+                      $ref: "#/components/schemas/Store"
+        "400":
           description: Cantidad inválida
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/mocks/generateStores:
     post:
       tags:
@@ -133,34 +112,21 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                stores:
-                  type: integer
-                  example: 1
+              $ref: "#/components/schemas/GenerateStoresMockRequest"
       responses:
-        '201':
+        "201":
           description: Tiendas creadas
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  payload:
-                    type: object
-                    properties:
-                      stores:
-                        type: integer
-                        example: 1
-        '400':
+                $ref: "#/components/schemas/MockStoresGeneratedResponse"
+        "400":
           description: Body inválido o cantidad inválida
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/mocks/mockingProducts:
     get:
       tags:
@@ -170,6 +136,7 @@ paths:
       parameters:
         - name: quantity
           in: query
+          required: false
           schema:
             type: integer
             minimum: 1
@@ -177,7 +144,7 @@ paths:
             default: 1
           description: Cantidad de productos mock a generar
       responses:
-        '200':
+        "200":
           description: Productos mock generados
           content:
             application/json:
@@ -190,20 +157,14 @@ paths:
                   payload:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        price:
-                          type: number
-                        stock:
-                          type: integer
-        '400':
+                      $ref: "#/components/schemas/Product"
+        "400":
           description: Cantidad inválida
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/mocks/generateProducts:
     post:
       tags:
@@ -215,34 +176,21 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                products:
-                  type: integer
-                  example: 1
+              $ref: "#/components/schemas/GenerateProductsMockRequest"
       responses:
-        '201':
+        "201":
           description: Productos creados
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  payload:
-                    type: object
-                    properties:
-                      products:
-                        type: integer
-                        example: 1
-        '400':
+                $ref: "#/components/schemas/MockProductsGeneratedResponse"
+        "400":
           description: Body inválido o cantidad inválida
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/mocks/mockingOrders:
     get:
       tags:
@@ -252,6 +200,7 @@ paths:
       parameters:
         - name: quantity
           in: query
+          required: false
           schema:
             type: integer
             minimum: 1
@@ -259,7 +208,7 @@ paths:
             default: 1
           description: Cantidad de pedidos mock a generar
       responses:
-        '200':
+        "200":
           description: Pedidos mock generados
           content:
             application/json:
@@ -272,20 +221,14 @@ paths:
                   payload:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        customer:
-                          type: string
-                        store:
-                          type: string
-                        items:
-                          type: array
-        '400':
+                      $ref: "#/components/schemas/Order"
+        "400":
           description: Cantidad inválida
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
   /api/mocks/generateOrders:
     post:
       tags:
@@ -297,31 +240,17 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                orders:
-                  type: integer
-                  example: 1
+              $ref: "#/components/schemas/GenerateOrdersMockRequest"
       responses:
-        '201':
+        "201":
           description: Pedidos creados
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  payload:
-                    type: object
-                    properties:
-                      orders:
-                        type: integer
-                        example: 1
-        '400':
+                $ref: "#/components/schemas/MockOrdersGeneratedResponse"
+        "400":
           description: Body inválido o cantidad inválida
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"

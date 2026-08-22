@@ -6,7 +6,7 @@ paths:
       summary: Obtener todos los usuarios
       description: Devuelve la lista de usuarios registrados en ShipNow.
       responses:
-        '200':
+        "200":
           description: Lista de usuarios
           content:
             application/json:
@@ -19,13 +19,14 @@ paths:
                   payload:
                     type: array
                     items:
-                      $ref: '#/components/schemas/User'
-        '500':
+                      $ref: "#/components/schemas/User"
+        "500":
           description: Error interno del servidor
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
     post:
       tags:
         - Users
@@ -36,9 +37,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCreate'
+              $ref: "#/components/schemas/UserCreate"
       responses:
-        '201':
+        "201":
           description: Usuario creado
           content:
             application/json:
@@ -49,33 +50,36 @@ paths:
                     type: string
                     example: success
                   payload:
-                    $ref: '#/components/schemas/User'
-        '400':
+                    $ref: "#/components/schemas/User"
+        "400":
           description: Error de validación
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
           description: Usuario existente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /api/users/{userId}:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/users/{uid}:
     parameters:
-      - name: userId
+      - name: uid
         in: path
         required: true
         schema:
           type: string
         description: ID del usuario
+
     get:
       tags:
         - Users
       summary: Obtener usuario por ID
+      description: Recupera un usuario específico a partir de su ID.
       responses:
-        '200':
+        "200":
           description: Usuario encontrado
           content:
             application/json:
@@ -86,19 +90,20 @@ paths:
                     type: string
                     example: success
                   payload:
-                    $ref: '#/components/schemas/User'
-        '400':
+                    $ref: "#/components/schemas/User"
+        "400":
           description: ID inválido
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Usuario no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
     put:
       tags:
         - Users
@@ -109,9 +114,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdate'
+              $ref: "#/components/schemas/UserUpdate"
       responses:
-        '200':
+        "200":
           description: Usuario actualizado
           content:
             application/json:
@@ -122,26 +127,27 @@ paths:
                     type: string
                     example: success
                   payload:
-                    $ref: '#/components/schemas/User'
-        '400':
+                    $ref: "#/components/schemas/User"
+        "400":
           description: Error de validación
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Usuario no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
     delete:
       tags:
         - Users
       summary: Eliminar usuario
       description: Elimina un usuario por su ID.
       responses:
-        '200':
+        "200":
           description: Usuario eliminado
           content:
             application/json:
@@ -152,16 +158,16 @@ paths:
                     type: string
                     example: success
                   payload:
-                    $ref: '#/components/schemas/User'
-        '400':
+                    $ref: "#/components/schemas/User"
+        "400":
           description: ID inválido
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Usuario no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"

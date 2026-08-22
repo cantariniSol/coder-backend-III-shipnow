@@ -27,7 +27,17 @@ import usersRouter from "./routes/users.routes.js";
 const app = express();
 
 // Configuración de Swagger
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use(
+    "/api/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpecs, {
+        swaggerOptions: {
+            defaultModelsExpandDepth: -1,
+            defaultModelExpandDepth: 1,
+            docExpansion: "list",
+        },
+    })
+);
 
 
 //Middleware

@@ -6,27 +6,31 @@ const swaggerOptions = {
 
         info: {
             title: "ShipNow API",
-            version: "1.0.0",
+            version: "1.0.1",
             description:
                 "Documentación de la API ShipNow para gestión de usuarios, pedidos, entregas, mocks, errores y logging.",
         },
 
         servers: [
-            {
-                url: "http://localhost:3000",
-                description: "Servidor local",
-            },
+            // {
+            //     url: "http://localhost:3000",
+            //     description: "Servidor local",
+            // },
             {
                 url: "http://localhost:3001",
                 description: "Servidor de desarrollo",
-            },
-            {
-                url: "http://localhost:3006",
-                description: "Servidor de staging",
-            },
+            }
+            // {
+            //     url: "http://localhost:3006",
+            //     description: "Servidor de staging",
+            // },
         ],
 
         tags: [
+            {
+                name: "Health-check",
+                description: "Operaciones relacionadas con el estado de salud del servicio",
+            },
             {
                 name: "Users",
                 description: "Operaciones relacionadas con usuarios",
@@ -54,7 +58,16 @@ const swaggerOptions = {
         ],
     },
 
-    apis: ["./src/docs/**/*.yaml"],
+    apis: [
+        "./src/docs/schemas.yaml",
+        "./src/docs/health-cheks/*.yaml",
+        "./src/docs/users/*.yaml",
+        "./src/docs/products/*.yaml",
+        "./src/docs/orders/*.yaml",
+        "./src/docs/stores/*.yaml",
+        "./src/docs/mocks/*.yaml",
+        "./src/docs/logger/*.yaml",
+    ],
 };
 
 export const swaggerSpecs = swaggerJSDoc(swaggerOptions);

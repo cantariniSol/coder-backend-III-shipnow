@@ -1,0 +1,93 @@
+components:
+  schemas:
+    UserDocument:
+      type: object
+      properties:
+        type:
+          type: string
+          example: PASSPORT
+        number:
+          type: string
+          example: AB123456
+
+    UserCreate:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+      properties:
+        firstName:
+          type: string
+          example: Juan
+        lastName:
+          type: string
+          example: Pérez
+        email:
+          type: string
+          format: email
+          example: juan.perez@gmail.com
+        password:
+          type: string
+          format: password
+          example: MiPassword123
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - CUSTOMER
+            - SELLER
+            - SUPPORT
+          example: CUSTOMER
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserDocument"
+
+    UserUpdate:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Juan
+        lastName:
+          type: string
+          example: Pérez
+        email:
+          type: string
+          format: email
+          example: juan.perez23@gmail.com
+        password:
+          type: string
+          format: password
+          example: NuevaPassword123
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - CUSTOMER
+            - SELLER
+            - SUPPORT
+          example: SELLER
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserDocument"
+
+    User:
+      allOf:
+        - $ref: "#/components/schemas/UserCreate"
+        - type: object
+          properties:
+            _id:
+              type: string
+              example: 65f987654321fedcba543210
+            createdAt:
+              type: string
+              format: date-time
+              example: "2026-08-10T18:30:00.000Z"
+            updatedAt:
+              type: string
+              format: date-time
+              example: "2026-08-10T18:30:00.000Z"

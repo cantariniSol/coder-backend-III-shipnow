@@ -1,0 +1,83 @@
+components:
+  schemas:
+    ProductCreate:
+      type: object
+      required:
+        - name
+        - price
+        - stock
+        - category
+        - code
+        - store
+      properties:
+        name:
+          type: string
+          example: Unbranded Marble Tuna
+        description:
+          type: string
+          example: New indigo table for modern spaces
+        price:
+          type: number
+          format: float
+          example: 34674.09
+        stock:
+          type: integer
+          example: 10
+        category:
+          type: string
+          example: hogar
+        code:
+          type: string
+          example: 192503
+        isActive:
+          type: boolean
+          example: false
+        store:
+          type: string
+          example: 6a7823b539faf08b4079b1c5
+
+    ProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Unbranded Marble Tuna XL
+        description:
+          type: string
+          example: Updated product description
+        price:
+          type: number
+          format: float
+          example: 38999.99
+        stock:
+          type: integer
+          example: 25
+        category:
+          type: string
+          example: hogar
+        code:
+          type: string
+          example: 192503
+        isActive:
+          type: boolean
+          example: true
+        store:
+          type: string
+          example: 6a7823b539faf08b4079b1c5
+
+    Product:
+      allOf:
+        - $ref: "#/components/schemas/ProductCreate"
+        - type: object
+          properties:
+            _id:
+              type: string
+              example: 65f987654321fedcba543212
+            createdAt:
+              type: string
+              format: date-time
+              example: "2026-08-10T18:30:00.000Z"
+            updatedAt:
+              type: string
+              format: date-time
+              example: "2026-08-10T18:30:00.000Z"
