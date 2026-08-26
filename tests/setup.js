@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 import config from "../src/config/index.js";
+import { createError } from "../src/errors/createError.js";
 
 
 before(async function () {
     this.timeout(15000);
 
     if (!config.MONGODB_URI) {
-        throw new Error("Falta MONGODB_URI para tests");
+        throw createError("VALIDATION_ERROR", "Falta MONGODB_URI para tests");
     }
 
     await mongoose.connect(config.MONGODB_URI, {

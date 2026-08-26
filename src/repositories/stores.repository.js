@@ -19,7 +19,7 @@ export const storesRepository = {
         return StoreModel.findByIdAndUpdate(
             id,
             updates,
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
     },
 

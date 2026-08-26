@@ -12,18 +12,10 @@ const swaggerOptions = {
         },
 
         servers: [
-            // {
-            //     url: "http://localhost:3000",
-            //     description: "Servidor local",
-            // },
             {
                 url: "http://localhost:3001",
                 description: "Servidor de desarrollo",
             }
-            // {
-            //     url: "http://localhost:3006",
-            //     description: "Servidor de staging",
-            // },
         ],
 
         tags: [

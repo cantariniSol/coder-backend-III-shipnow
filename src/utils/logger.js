@@ -29,6 +29,7 @@ winston.addColors(colors);
 
 const currentLevel =
     config.NODE_ENV === "development" ? "debug" : "info";
+const isTestEnvironment = config.NODE_ENV === "test";
 
 const consoleFormat = winston.format.combine(
     winston.format.timestamp({
@@ -51,37 +52,40 @@ const fileFormat = winston.format.combine(
     winston.format.json()
 );
 
-const transports = [
-    new winston.transports.Console({
-        level: currentLevel,
-        format: consoleFormat,
-    }),
+const transports = isTestEnvironment
+    ? []
+    : [
+        new winston.transports.Console({
+            level: currentLevel,
+            format: consoleFormat,
+        }),
 
-    new winston.transports.DailyRotateFile({
-        filename: path.join(__dirname, "../../logs/application-%DATE%.log"),
-        datePattern: "YYYY-MM-DD",
-        level: "info",
-        zippedArchive: true,
-        maxSize: "20m",
-        maxFiles: "14d",
-        format: fileFormat,
-    }),
+        new winston.transports.DailyRotateFile({
+            filename: path.join(__dirname, "../../logs/application-%DATE%.log"),
+            datePattern: "YYYY-MM-DD",
+            level: "info",
+            zippedArchive: true,
+            maxSize: "20m",
+            maxFiles: "14d",
+            format: fileFormat,
+        }),
 
-    new winston.transports.DailyRotateFile({
-        filename: path.join(__dirname, "../../logs/error-%DATE%.log"),
-        datePattern: "YYYY-MM-DD",
-        level: "error",
-        zippedArchive: true,
-        maxSize: "20m",
-        maxFiles: "14d",
-        format: fileFormat,
-    }),
-];
+        new winston.transports.DailyRotateFile({
+            filename: path.join(__dirname, "../../logs/error-%DATE%.log"),
+            datePattern: "YYYY-MM-DD",
+            level: "error",
+            zippedArchive: true,
+            maxSize: "20m",
+            maxFiles: "14d",
+            format: fileFormat,
+        }),
+    ];
 
 const logger = winston.createLogger({
     level: currentLevel,
     levels,
     transports,
+    silent: isTestEnvironment,
     exitOnError: false,
 });
 

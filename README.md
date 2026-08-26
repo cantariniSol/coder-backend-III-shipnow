@@ -4,6 +4,36 @@ API RESTful desarrollada con Express.js y MongoDB para gestionar productos, usua
 
 ---
 
+## Índice
+
+- [ShipNow API](#shipnow-api)
+  - [Índice](#índice)
+  - [📋 Requisitos previos](#-requisitos-previos)
+  - [🚀 Instalación y ejecución local](#-instalación-y-ejecución-local)
+    - [1. Clonar el repositorio](#1-clonar-el-repositorio)
+    - [2. Instalar dependencias](#2-instalar-dependencias)
+    - [3. Configurar variables de entorno](#3-configurar-variables-de-entorno)
+    - [4. Ejecutar el servidor](#4-ejecutar-el-servidor)
+  - [✅ Verificar funcionamiento](#-verificar-funcionamiento)
+  - [🧪 Testing funcional](#-testing-funcional)
+  - [📝 Documentación con Swagger](#-documentación-con-swagger)
+  - [🏗️ Arquitectura en capas](#️-arquitectura-en-capas)
+  - [🔌 Endpoints principales](#-endpoints-principales)
+    - [Usuarios](#usuarios)
+    - [Tiendas](#tiendas)
+    - [Productos](#productos)
+    - [Órdenes](#órdenes)
+  - [🧪 Mocks para desarrollo](#-mocks-para-desarrollo)
+    - [Endpoints de mocks](#endpoints-de-mocks)
+    - [Qué hacen los mocks](#qué-hacen-los-mocks)
+  - [🔐 Seguridad y validaciones](#-seguridad-y-validaciones)
+  - [📦 Dependencias principales](#-dependencias-principales)
+  - [📝 Logging y monitoreo básico](#-logging-y-monitoreo-básico)
+    - [Endpoint de prueba del logger](#endpoint-de-prueba-del-logger)
+  - [👤 Autor](#-autor)
+
+---
+
 ## 📋 Requisitos previos
 
 - Node.js 18+
@@ -34,7 +64,8 @@ Crea los archivos de entorno según el ambiente que quieras usar:
 
 - `.env.dev` para desarrollo
 - `.env.test` para testing
-
+  
+--
 
 Ejemplo de variables:
 
@@ -53,17 +84,13 @@ npm run dev
 ```
 
 ```bash
-npm run stg
-```
-
-```bash
-npm run prod
+npm run test
 ```
 
 El servidor quedará disponible en:
 
 ```text
-http://localhost:3001
+http://localhost:3001/api
 ```
 
 ---
@@ -71,32 +98,82 @@ http://localhost:3001
 ## ✅ Verificar funcionamiento
 
 ```bash
-curl http://localhost:3001/
+curl http://localhost:3001/api/
 ```
 
 Respuesta esperada:
 
 ```json
 {
-  "status": "success",
-  "message": "ShipNow API está corriendo y lista para recibir peticiones"
+    "status": "success",
+    "message": "ShipNow API está corriendo y lista para recibir peticiones",
+    "environment": "development",
+    "port": "3001",
+    "url": "http://localhost:3001/api"
 }
 ```
 
 También podés verificar la salud del servidor:
 
 ```bash
-curl http://localhost:30001/health
+curl http://localhost:30001/api/health
 ```
 
 ---
 
-## � Documentación con Swagger
+## 🧪 Testing funcional
+
+El proyecto utiliza testing funcional con:
+
+- Mocha (runner de tests)
+- Chai (assertions)
+- Supertest (requests HTTP sobre la app Express)
+
+### Ejecución
+
+```bash
+npm run test
+```
+
+Script configurado en [package.json](package.json):
+
+```json
+"test": "cross-env NODE_ENV=test MONGODB_URI=mongodb://localhost:27018/shipnow_test mocha --file tests/setup.js \"tests/**/*.test.js\" --timeout 100000 --exit"
+```
+
+### Entorno de testing y variables
+
+- `NODE_ENV=test`
+- `MONGODB_URI=mongodb://localhost:27018/shipnow_test`
+
+El proyecto también soporta `.env.test` por el loader de entorno en `src/config`.
+
+### Base de datos de testing
+
+- Se usa una base separada de desarrollo (`shipnow_test` en el puerto 27018).
+- La limpieza de datos se realiza en cada test mediante [tests/setup.js](tests/setup.js):
+  - conexión antes de ejecutar
+  - `deleteMany({})` por colección en `beforeEach`
+  - cierre de conexión al finalizar
+
+### Módulos cubiertos
+
+- Soporte y salud: `api root`, `health`, `swagger`, ruta inexistente
+- Users: listado, creación, validaciones, update, delete
+- Stores: listado, creación, validaciones, update, delete
+- Products: listado, creación, validaciones, update, delete
+- Orders: listado, creación, validaciones de negocio, update de estado/prioridad, delete
+- Mocks: endpoints de generación/listado y validaciones de `quantity`/body
+- Logger: endpoint de prueba del logger
+
+---
+
+## 📝 Documentación con Swagger
 
 La API está documentada con Swagger y expondrá una interfaz interactiva en:
 
 ```text
-http://localhost:30001/api/docs
+http://localhost:3001/api/docs/
 ```
 
 En Swagger vas a encontrar los módulos documentados:
@@ -110,76 +187,7 @@ En Swagger vas a encontrar los módulos documentados:
 
 Desde esa ruta podés abrir la documentación, revisar cada endpoint y probar las peticiones directamente.
 
----
-
-## �📁 Estructura del proyecto
-
-```text
-src/
-├── app.js
-├── config/
-│   ├── db.js
-│   ├── env.loader.js
-│   ├── env.validate.js
-│   └── index.js
-├── constants/
-│   └── index.js
-├── controllers/
-│   ├── users.controller.js
-│   ├── stores.controller.js
-│   ├── products.controller.js
-│   ├── orders.controller.js
-│   └── mocks/
-│       ├── users.mocks.controller.js
-│       ├── stores.mocks.controller.js
-│       ├── products.mocks.controller.js
-│       └── orders.mocks.controller.js
-├── errors/
-│   ├── AppError.js
-│   ├── createError.js
-│   ├── errors.dictionary.js
-│   └── index.js
-├── middlewares/
-│   └── errorHandler.js
-├── models/
-│   ├── users.model.js
-│   ├── stores.model.js
-│   ├── products.model.js
-│   └── orders.model.js
-├── mocks/
-│   ├── users.mocks.js
-│   ├── stores.mocks.js
-│   ├── products.mocks.js
-│   ├── orders.mocks.js
-├── repositories/
-│   ├── users.repository.js
-│   ├── stores.repository.js
-│   ├── products.repository.js
-│   └── orders.repository.js
-├── responses/
-│   └── apiResponse.js
-├── services/
-│   ├── users.service.js
-│   ├── stores.service.js
-│   ├── products.service.js
-│   ├── orders.service.js
-│   └── mocks/
-│       ├── users.mocks.service.js
-│       ├── stores.mocks.service.js
-│       ├── products.mocks.service.js
-│       └── orders.mocks.service.js
-├── routes/
-│   ├── users.routes.js
-│   ├── stores.router.js
-│   ├── products.routes.js
-│   ├── orders.router.js
-│   └── mocks.router.js
-└── utils/
-    ├── mocks.validate.js
-    └── logger.js
-````
-
----
+--
 
 ## 🏗️ Arquitectura en capas
 
@@ -195,37 +203,6 @@ La aplicación sigue una arquitectura modular basada en capas:
 La separación en capas permite mantener el código más claro, escalable y fácil de probar. El logger centralizado evita `console.log` dispersos y facilita la observabilidad del servidor.
 
 ---
-
-## 📝 Logging y monitoreo básico
-
-ShipNow usa `winston` como logger centralizado. El sistema registra eventos importantes en distintos niveles:
-
-- `debug`
-- `http`
-- `info`
-- `warning`
-- `error`
-- `fatal`
-
-Los logs se escriben en consola y en archivos rotados bajo `logs/`:
-
-- `logs/application-YYYY-MM-DD.log` para `info` y niveles superiores
-- `logs/error-YYYY-MM-DD.log` para `error` y `fatal`
-
-El comportamiento cambia según el entorno:
-
-- En desarrollo (`NODE_ENV=development`), se muestran logs desde `debug`.
-- En producción (`NODE_ENV=production`), se registran solo niveles más relevantes como `info`, `warning`, `error` y `fatal`.
-
-### Endpoint de prueba del logger
-
-Para verificar la configuración del logger ejecuta:
-
-```bash
-curl -i http://localhost:3001/api/mocks/loggerTest
-```
-
-Esta ruta está disponible solo en entornos distintos a producción.
 
 ---
 
@@ -335,14 +312,38 @@ POST   /mocks/generateOrders
 
 ---
 
-## 🛠️ Scripts disponibles
+## 📝 Logging y monitoreo básico
+
+ShipNow usa `winston` como logger centralizado. El sistema registra eventos importantes en distintos niveles:
+
+- `debug`
+- `http`
+- `info`
+- `warning`
+- `error`
+- `fatal`
+
+Los logs se escriben en consola y en archivos rotados bajo `logs/`:
+
+- `logs/application-YYYY-MM-DD.log` para `info` y niveles superiores
+- `logs/error-YYYY-MM-DD.log` para `error` y `fatal`
+
+El comportamiento cambia según el entorno:
+
+- En desarrollo (`NODE_ENV=development`), se muestran logs desde `debug`.
+- En producción (`NODE_ENV=production`), se registran solo niveles más relevantes como `info`, `warning`, `error` y `fatal`.
+
+### Endpoint de prueba del logger
+
+Para verificar la configuración del logger ejecuta:
 
 ```bash
-npm run dev
-npm run test
+curl -i http://localhost:3001/api/mocks/loggerTest
 ```
 
----
+Esta ruta está disponible solo en entornos distintos a producción.
+
+--
 
 ## 👤 Autor
 

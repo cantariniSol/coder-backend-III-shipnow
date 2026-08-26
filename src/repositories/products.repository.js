@@ -17,7 +17,7 @@ export const productsRepository = {
         return ProductModel.findByIdAndUpdate(
             id,
             updates,
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
     },
 

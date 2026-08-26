@@ -19,6 +19,7 @@ import ordersRouter from "./routes/orders.router.js";
 import productsRouter from "./routes/products.routes.js";
 import storesRouter from "./routes/stores.router.js";
 import usersRouter from "./routes/users.routes.js";
+import healthRouter from "./routes/health.router.js";
 
 
 
@@ -49,29 +50,18 @@ app.use(express.json());
 
 //Rutas
 //Ruta principal
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
     res.json({
         status: "success",
         message: "ShipNow API está corriendo y lista para recibir peticiones",
         environment: config.NODE_ENV,
         port: config.PORT,
-        url: `http://localhost:${config.PORT}`
+        url: `http://localhost:${config.PORT}/api`
     });
 });
 
 //Ruta de salud del servidor
-app.get("/health", (req, res) => {
-    res.json({
-        status: "success",
-        message: "Health check de ShipNow API",
-        url: `http://localhost:${config.PORT}`,
-        puerto: config.PORT,
-        environment: config.NODE_ENV,
-        server: "conectado",
-        database: "conectado"
-    });
-});
-
+app.use("/api", healthRouter);
 //Ruta para usuarios
 app.use("/api/users", usersRouter);
 //Ruta para tiendas
