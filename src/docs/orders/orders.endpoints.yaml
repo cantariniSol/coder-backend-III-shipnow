@@ -171,3 +171,56 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+  /api/orders/{oid}/proof:
+    parameters:
+      - name: oid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del pedido
+
+    post:
+      tags:
+        - Orders
+      summary: Cargar comprobante de pedido
+      description: Guarda un comprobante PDF, JPG o PNG y registra sus metadatos en el pedido.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - proof
+              properties:
+                proof:
+                  type: string
+                  format: binary
+                  description: Archivo PDF, JPG o PNG de hasta 5 MB.
+      responses:
+        "201":
+          description: Comprobante cargado y asociado al pedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/Order"
+        "400":
+          description: Archivo faltante, tipo de archivo inválido o tamaño excedido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Pedido no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

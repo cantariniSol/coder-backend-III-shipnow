@@ -1,4 +1,12 @@
 import { usersService } from "../services/users.service.js";
+import fs from "node:fs/promises";
+import logger from "../utils/logger.js";
+
+const removeUploadedFile = async (file) => {
+    if (file?.path) {
+        await fs.unlink(file.path).catch(() => undefined);
+    }
+};
 
 export const getUsers = async (req, res, next) => {
     try {
@@ -32,6 +40,28 @@ export const updateUser = async (req, res, next) => {
         const user = await usersService.updateUser(req.params.uid, req.body);
         res.json({ status: "success", payload: user });
     } catch (error) {
+        next(error);
+    }
+};
+
+export const uploadUserDocument = async (req, res, next) => {
+    try {
+        const user = await usersService.addUploadedDocument(
+            req.params.uid,
+            req.file,
+            req.body.documentType
+        );
+
+        const document = user.uploadedDocuments.at(-1);
+        logger.info("Documento de usuario cargado", {
+            userId: user._id.toString(),
+            filename: document.filename,
+            documentType: document.documentType,
+        });
+
+        res.status(201).json({ status: "success", payload: user });
+    } catch (error) {
+        await removeUploadedFile(req.file);
         next(error);
     }
 };

@@ -1,6 +1,38 @@
 import mongoose from "mongoose";
 import { ORDER_STATUS, ORDER_PRIORITY } from "../constants/index.js";
 
+const proofSchema = new mongoose.Schema(
+    {
+        originalName: {
+            type: String,
+            required: true
+        },
+        filename: {
+            type: String,
+            required: true
+        },
+        path: {
+            type: String,
+            required: true
+        },
+        mimetype: {
+            type: String,
+            required: true
+        },
+        size: {
+            type: Number,
+            required: true
+        },
+        uploadedAt: {
+            type: Date,
+            default: Date.now
+        }
+    },
+    {
+        _id: false
+    }
+);
+
 const orderItemSchema = new mongoose.Schema(
     {
         name: {
@@ -56,7 +88,7 @@ const orderSchema = new mongoose.Schema(
             default: ORDER_PRIORITY.NORMAL
         },
         proof: {
-            type: Object,
+            type: proofSchema,
             default: null
         }
     },

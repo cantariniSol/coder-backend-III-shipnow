@@ -1,11 +1,11 @@
 import { Router } from "express";
-import OrderModel from "../models/orders.model.js";
-import UserModel from "../models/users.model.js";
 import { getOrders, 
         getOrderById, 
         createOrder,
         updateOrder,  
-        deleteOrder } from "../controllers/orders.controller.js";
+        deleteOrder,
+        uploadOrderProof } from "../controllers/orders.controller.js";
+import { uploadOrderProof as uploadOrderProofFile } from "../middlewares/upload.middleware.js";
 
 const router = Router();
 
@@ -14,6 +14,8 @@ router.get("/", getOrders);
 router.get("/:oid", getOrderById);
 
 router.post("/", createOrder);
+
+router.post("/:oid/proof", uploadOrderProofFile, uploadOrderProof);
 
 router.put("/:oid", updateOrder);
 

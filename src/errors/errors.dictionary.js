@@ -16,6 +16,26 @@ export const ERROR_DICTIONARY = {
         statusCode: 400,
         message: "El pedido debe incluir al menos un item",
     },
+    FILE_REQUIRED: {
+        statusCode: 400,
+        message: "Debe adjuntar un archivo",
+    },
+    INVALID_FILE_TYPE: {
+        statusCode: 400,
+        message: "El tipo de archivo no está permitido",
+    },
+    FILE_TOO_LARGE: {
+        statusCode: 400,
+        message: "El archivo supera el tamaño máximo permitido",
+    },
+    INVALID_DOCUMENT_TYPE: {
+        statusCode: 400,
+        message: "El tipo de documento es inválido",
+    },
+    FILE_SAVE_ERROR: {
+        statusCode: 500,
+        message: "No se pudo guardar la información del archivo",
+    },
 
     // Errores de recurso no encontrado
     USER_NOT_FOUND: {

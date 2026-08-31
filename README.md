@@ -16,6 +16,7 @@ API RESTful desarrollada con Express.js y MongoDB para gestionar productos, usua
     - [4. Ejecutar el servidor](#4-ejecutar-el-servidor)
   - [✅ Verificar funcionamiento](#-verificar-funcionamiento)
   - [🧪 Testing funcional](#-testing-funcional)
+  - [📎 Carga de archivos](#-carga-de-archivos)
   - [📝 Documentación con Swagger](#-documentación-con-swagger)
   - [🏗️ Arquitectura en capas](#️-arquitectura-en-capas)
   - [🔌 Endpoints principales](#-endpoints-principales)
@@ -165,6 +166,41 @@ El proyecto también soporta `.env.test` por el loader de entorno en `src/config
 - Orders: listado, creación, validaciones de negocio, update de estado/prioridad, delete
 - Mocks: endpoints de generación/listado y validaciones de `quantity`/body
 - Logger: endpoint de prueba del logger
+- Uploads: documentos de usuario y comprobantes de pedidos
+
+---
+
+## 📎 Carga de archivos
+
+La carga de archivos usa Multer con configuración centralizada en `src/middlewares/upload.middleware.js`.
+
+- Tipos permitidos: PDF, JPG y PNG.
+- Tamaño máximo: 5 MB por archivo.
+- Los archivos se guardan fuera de Git en `uploads/`.
+- MongoDB guarda únicamente metadatos: nombre original, nombre generado, ruta, tipo MIME, tamaño y fecha de carga.
+
+### Documento de usuario
+
+```text
+POST /api/users/:uid/documents
+```
+
+Enviar como `multipart/form-data`:
+
+- `document`: archivo PDF, JPG o PNG.
+- `documentType`: `DNI`, `CUIT`, `CUIL` o `PASSPORT`.
+
+### Comprobante de pedido
+
+```text
+POST /api/orders/:oid/proof
+```
+
+Enviar como `multipart/form-data`:
+
+- `proof`: archivo PDF, JPG o PNG.
+
+Los errores de archivo usan el formato común de la API: `FILE_REQUIRED`, `INVALID_FILE_TYPE`, `FILE_TOO_LARGE`, `INVALID_DOCUMENT_TYPE` y `FILE_SAVE_ERROR`.
 
 ---
 

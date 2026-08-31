@@ -1,4 +1,12 @@
 import { ordersService } from "../services/orders.service.js";
+import fs from "node:fs/promises";
+import logger from "../utils/logger.js";
+
+const removeUploadedFile = async (file) => {
+    if (file?.path) {
+        await fs.unlink(file.path).catch(() => undefined);
+    }
+};
 
 export const getOrders = async (req, res, next) => {
     try {
@@ -32,6 +40,22 @@ export const updateOrder = async (req, res, next) => {
         const order = await ordersService.updateOrder(req.params.oid, req.body);
         res.json({ status: "success", payload: order });
     } catch (error) {
+        next(error);
+    }
+};
+
+export const uploadOrderProof = async (req, res, next) => {
+    try {
+        const order = await ordersService.addProof(req.params.oid, req.file);
+
+        logger.info("Comprobante asociado a pedido", {
+            orderId: order._id.toString(),
+            filename: order.proof.filename,
+        });
+
+        res.status(201).json({ status: "success", payload: order });
+    } catch (error) {
+        await removeUploadedFile(req.file);
         next(error);
     }
 };

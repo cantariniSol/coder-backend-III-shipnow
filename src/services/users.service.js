@@ -1,6 +1,17 @@
 import { usersRepository } from "../repositories/users.repository.js";
-import { USER_ROLES } from "../constants/index.js";
+import path from "node:path";
+import { DOCUMENT_TYPES, USER_ROLES } from "../constants/index.js";
 import { createError } from "../errors/createError.js";
+
+const createDocumentMetadata = (file, documentType) => ({
+    originalName: file.originalname,
+    filename: file.filename,
+    path: path.relative(process.cwd(), file.path).replaceAll("\\", "/"),
+    mimetype: file.mimetype,
+    size: file.size,
+    documentType,
+    uploadedAt: new Date(),
+});
 
 export const usersService = {
     getUsers: async () => {
@@ -46,6 +57,36 @@ export const usersService = {
         }
 
         return user;
+    },
+
+    addUploadedDocument: async (id, file, documentType) => {
+        if (!file) {
+            throw createError("FILE_REQUIRED");
+        }
+
+        const normalizedDocumentType = documentType?.trim().toUpperCase();
+        if (!Object.values(DOCUMENT_TYPES).includes(normalizedDocumentType)) {
+            throw createError("INVALID_DOCUMENT_TYPE");
+        }
+
+        try {
+            const user = await usersRepository.addUploadedDocument(
+                id,
+                createDocumentMetadata(file, normalizedDocumentType)
+            );
+
+            if (!user) {
+                throw createError("USER_NOT_FOUND");
+            }
+
+            return user;
+        } catch (error) {
+            if (error.code || error.name === "CastError") {
+                throw error;
+            }
+
+            throw createError("FILE_SAVE_ERROR");
+        }
     },
 
     deleteUser: async (id) => {

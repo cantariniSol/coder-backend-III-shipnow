@@ -10,6 +10,36 @@ export function errorHandler(error, req, res, next) {
         url: req.originalUrl,
     };
 
+    // Multer: tamaño excedido o campo de archivo inesperado
+    if (error?.name === "MulterError") {
+        const code = error.code === "LIMIT_FILE_SIZE"
+            ? "FILE_TOO_LARGE"
+            : "INVALID_FILE_TYPE";
+
+        logger.warn("Error al cargar archivo", {
+            ...requestContext,
+            code,
+            multerCode: error.code,
+            field: error.field,
+        });
+
+        return errorResponse(res, {
+            statusCode: 400,
+            message: code === "FILE_TOO_LARGE"
+                ? "El archivo supera el tamaño máximo permitido"
+                : "El campo del archivo no es válido",
+            error: {
+                code,
+                message: code === "FILE_TOO_LARGE"
+                    ? "El archivo supera el tamaño máximo permitido"
+                    : "El campo del archivo no es válido",
+                details: {
+                    field: error.field ?? null,
+                },
+            },
+        });
+    }
+
     // Mongoose CastError (ObjectId inválido)
     if (error?.name === "CastError") {
         logger.warn("Error de validación en request", {

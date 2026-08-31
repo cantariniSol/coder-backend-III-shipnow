@@ -171,3 +171,61 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+  /api/users/{uid}/documents:
+    parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del usuario
+
+    post:
+      tags:
+        - Users
+      summary: Cargar documento de usuario
+      description: Guarda un archivo PDF, JPG o PNG y registra sus metadatos en el usuario.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - document
+                - documentType
+              properties:
+                document:
+                  type: string
+                  format: binary
+                  description: Archivo PDF, JPG o PNG de hasta 5 MB.
+                documentType:
+                  type: string
+                  enum: [DNI, CUIT, CUIL, PASSPORT]
+                  description: Tipo de documento asociado al archivo.
+      responses:
+        "201":
+          description: Documento cargado y asociado al usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Archivo faltante, tipo de archivo, tamaño o tipo de documento inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

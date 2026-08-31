@@ -9,3 +9,10 @@ node_modules/
 # Logs
 logs/
 
+# Archivos cargados por usuarios
+uploads/
+
+
+# Archivos 
+uploads/
+

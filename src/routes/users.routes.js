@@ -1,10 +1,11 @@
 import { Router } from "express";
-import UserModel from "../models/users.model.js";
 import { getUsers, 
         getUserById, 
         createUser, 
         updateUser, 
-        deleteUser } from "../controllers/users.controller.js";
+        deleteUser,
+        uploadUserDocument } from "../controllers/users.controller.js";
+import { uploadUserDocument as uploadUserDocumentFile } from "../middlewares/upload.middleware.js";
 
 const router = Router();
 
@@ -13,6 +14,8 @@ router.get("/", getUsers);
 router.get("/:uid", getUserById);
 
 router.post("/", createUser);
+
+router.post("/:uid/documents", uploadUserDocumentFile, uploadUserDocument);
 
 router.put("/:uid", updateUser);
 

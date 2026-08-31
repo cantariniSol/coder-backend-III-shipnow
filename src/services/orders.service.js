@@ -1,6 +1,7 @@
 import { createError } from "../errors/createError.js";
 import { ordersRepository } from "../repositories/orders.repository.js";
 import { productsService } from "./products.service.js";
+import path from "node:path";
 import { ORDER_STATUS, ORDER_PRIORITY } from "../constants/index.js";
 
 const CANNOT_CANCEL_AFTER = [
@@ -9,6 +10,15 @@ const CANNOT_CANCEL_AFTER = [
     ORDER_STATUS.IN_TRANSIT,
     ORDER_STATUS.DELIVERED,
 ];
+
+const createProofMetadata = (file) => ({
+    originalName: file.originalname,
+    filename: file.filename,
+    path: path.relative(process.cwd(), file.path).replaceAll("\\", "/"),
+    mimetype: file.mimetype,
+    size: file.size,
+    uploadedAt: new Date(),
+});
 
 export const ordersService = {
     getOrders: async () => {
@@ -112,6 +122,31 @@ export const ordersService = {
         };
 
         return ordersRepository.update(id, updateData);
+    },
+
+    addProof: async (id, file) => {
+        if (!file) {
+            throw createError("FILE_REQUIRED");
+        }
+
+        try {
+            const order = await ordersRepository.addProof(
+                id,
+                createProofMetadata(file)
+            );
+
+            if (!order) {
+                throw createError("ORDER_NOT_FOUND");
+            }
+
+            return order;
+        } catch (error) {
+            if (error.code || error.name === "CastError") {
+                throw error;
+            }
+
+            throw createError("FILE_SAVE_ERROR");
+        }
     },
 
     deleteOrder: async (id) => {
