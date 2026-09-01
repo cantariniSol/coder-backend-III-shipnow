@@ -55,7 +55,7 @@ export const seedOrderContext = async () => {
         name: "Gorgeous Marble Bike",
         price: 54900.69,
         stock: 10,
-        code: 403588,
+        code: Math.floor(100000 + Math.random() * 900000),
     });
 
     const orderPayload = {

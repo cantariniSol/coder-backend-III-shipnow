@@ -25,21 +25,13 @@ components:
         status:
           type: string
           example: success
-        message:
-          type: string
-          example: Health check de ShipNow API
-        url:
-          type: string
-          example: http://localhost:3001
-        puerto:
-          type: string
-          example: "3001"
         environment:
           type: string
-          example: development
-        server:
+          example: production
+        uptime:
+          type: number
+          example: 123.45
+        timestamp:
           type: string
-          example: conectado
-        database:
-          type: string
-          example: conectado
+          format: date-time
+          example: "2026-08-31T12:00:00.000Z"

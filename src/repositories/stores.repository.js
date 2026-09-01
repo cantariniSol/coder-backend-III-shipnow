@@ -3,8 +3,22 @@ import UserModel from "../models/users.model.js";
 
 
 export const storesRepository = {
-    findAll: async () => {
-        return StoreModel.find();
+    findAll: async ({ page, limit }) => {
+        const skip = (page - 1) * limit;
+
+        const [stores, total] = await Promise.all([
+            StoreModel.find()
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+            StoreModel.countDocuments(),
+        ]);
+
+        return {
+            stores,
+            total,
+        };
     },
 
     findById: async (id) => {

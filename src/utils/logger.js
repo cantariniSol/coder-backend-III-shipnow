@@ -27,8 +27,7 @@ const colors = {
 
 winston.addColors(colors);
 
-const currentLevel =
-    config.NODE_ENV === "development" ? "debug" : "info";
+const currentLevel = config.LOG_LEVEL;
 const isTestEnvironment = config.NODE_ENV === "test";
 
 const consoleFormat = winston.format.combine(

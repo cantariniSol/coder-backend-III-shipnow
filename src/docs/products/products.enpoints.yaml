@@ -4,7 +4,23 @@ paths:
       tags:
         - Products
       summary: Obtener todos los productos
-      description: Recupera todos los productos disponibles.
+      description: Recupera una página de productos disponibles.
+      parameters:
+        - name: page
+          in: query
+          description: Número de página (mínimo 1).
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Cantidad de resultados por página (entre 1 y 50).
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
       responses:
         "200":
           description: Lista de productos
@@ -20,6 +36,27 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Product"
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total:
+                        type: integer
+                        example: 42
+                      totalPages:
+                        type: integer
+                        example: 5
+        "400":
+          description: Parámetros de paginación inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Error interno del servidor
           content:

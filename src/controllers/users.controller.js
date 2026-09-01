@@ -10,8 +10,13 @@ const removeUploadedFile = async (file) => {
 
 export const getUsers = async (req, res, next) => {
     try {
-        const users = await usersService.getUsers();
-        res.json({ status: "success", payload: users });
+        const { users, meta } = await usersService.getUsers(req.query);
+
+        res.json({
+            status: "success",
+            payload: users,
+            meta,
+        });
     } catch (error) {
         next(error);
     }

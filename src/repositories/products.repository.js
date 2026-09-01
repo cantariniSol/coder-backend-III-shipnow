@@ -1,8 +1,23 @@
 import ProductModel from "../models/products.model.js";
 
 export const productsRepository = {
-    findAll: async () => {
-        return ProductModel.find().populate("store");
+    findAll: async ({ page, limit }) => {
+        const skip = (page - 1) * limit;
+
+        const [products, total] = await Promise.all([
+            ProductModel.find()
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate("store")
+                .lean(),
+            ProductModel.countDocuments(),
+        ]);
+
+        return {
+            products,
+            total,
+        };
     },
 
     findById: async (id) => {

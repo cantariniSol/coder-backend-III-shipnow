@@ -10,8 +10,8 @@ const removeUploadedFile = async (file) => {
 
 export const getOrders = async (req, res, next) => {
     try {
-        const orders = await ordersService.getOrders();
-        res.json({ status: "success", payload: orders });
+        const { orders, meta } = await ordersService.getOrders(req.query);
+        res.json({ status: "success", payload: orders, meta });
     } catch (error) {
         next(error);
     }

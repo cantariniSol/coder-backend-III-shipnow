@@ -10,6 +10,29 @@ const CANNOT_CANCEL_AFTER = [
     ORDER_STATUS.IN_TRANSIT,
     ORDER_STATUS.DELIVERED,
 ];
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 10;
+const MAX_LIMIT = 50;
+
+const parsePagination = (pageValue, limitValue) => {
+    const page = pageValue === undefined ? DEFAULT_PAGE : Number(pageValue);
+    const limit = limitValue === undefined ? DEFAULT_LIMIT : Number(limitValue);
+
+    if (
+        !Number.isInteger(page) ||
+        !Number.isInteger(limit) ||
+        page < 1 ||
+        limit < 1 ||
+        limit > MAX_LIMIT
+    ) {
+        throw createError(
+            "VALIDATION_ERROR",
+            `page debe ser mayor o igual a 1 y limit debe estar entre 1 y ${MAX_LIMIT}`
+        );
+    }
+
+    return { page, limit };
+};
 
 const createProofMetadata = (file) => ({
     originalName: file.originalname,
@@ -21,8 +44,19 @@ const createProofMetadata = (file) => ({
 });
 
 export const ordersService = {
-    getOrders: async () => {
-        return ordersRepository.findAll();
+    getOrders: async (query = {}) => {
+        const { page, limit } = parsePagination(query.page, query.limit);
+        const { orders, total } = await ordersRepository.findAll({ page, limit });
+
+        return {
+            orders,
+            meta: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
     },
 
     getOrderById: async (id) => {

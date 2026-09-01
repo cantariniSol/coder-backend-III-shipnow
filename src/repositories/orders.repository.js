@@ -3,8 +3,24 @@ import UserModel from "../models/users.model.js";
 import StoreModel from "../models/stores.model.js";
 
 export const ordersRepository = {
-    findAll: async () => {
-        return OrderModel.find().populate("customer").populate("store");
+    findAll: async ({ page, limit }) => {
+        const skip = (page - 1) * limit;
+
+        const [orders, total] = await Promise.all([
+            OrderModel.find()
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate("customer")
+                .populate("store")
+                .lean(),
+            OrderModel.countDocuments(),
+        ]);
+
+        return {
+            orders,
+            total,
+        };
     },
 
     findById: async (id) => {

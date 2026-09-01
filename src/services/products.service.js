@@ -3,6 +3,29 @@ import { productsRepository } from "../repositories/products.repository.js";
 import { PRODUCT_STATUS, PRODUCT_CATEGORIES } from "../constants/index.js";
 
 const allowedCategories = Object.values(PRODUCT_CATEGORIES);
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 10;
+const MAX_LIMIT = 50;
+
+const parsePagination = (pageValue, limitValue) => {
+    const page = pageValue === undefined ? DEFAULT_PAGE : Number(pageValue);
+    const limit = limitValue === undefined ? DEFAULT_LIMIT : Number(limitValue);
+
+    if (
+        !Number.isInteger(page) ||
+        !Number.isInteger(limit) ||
+        page < 1 ||
+        limit < 1 ||
+        limit > MAX_LIMIT
+    ) {
+        throw createError(
+            "VALIDATION_ERROR",
+            `page debe ser mayor o igual a 1 y limit debe estar entre 1 y ${MAX_LIMIT}`
+        );
+    }
+
+    return { page, limit };
+};
 
 const validateCategory = (category) => {
     const normalizedCategory = category?.trim().toLowerCase();
@@ -18,8 +41,19 @@ const validateCategory = (category) => {
 };
 
 export const productsService = {
-    getProducts: async () => {
-        return productsRepository.findAll();
+    getProducts: async (query = {}) => {
+        const { page, limit } = parsePagination(query.page, query.limit);
+        const { products, total } = await productsRepository.findAll({ page, limit });
+
+        return {
+            products,
+            meta: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
     },
 
     getProductById: async (id) => {

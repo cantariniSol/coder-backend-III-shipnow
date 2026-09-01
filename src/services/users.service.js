@@ -3,6 +3,34 @@ import path from "node:path";
 import { DOCUMENT_TYPES, USER_ROLES } from "../constants/index.js";
 import { createError } from "../errors/createError.js";
 
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 10;
+const MAX_LIMIT = 50;
+const parsePagination = (pageValue, limitValue) => {
+    const page = pageValue === undefined
+        ? DEFAULT_PAGE
+        : Number(pageValue);
+
+    const limit = limitValue === undefined
+        ? DEFAULT_LIMIT
+        : Number(limitValue);
+
+    if (
+        !Number.isInteger(page) ||
+        !Number.isInteger(limit) ||
+        page < 1 ||
+        limit < 1 ||
+        limit > MAX_LIMIT
+    ) {
+        throw createError(
+            "VALIDATION_ERROR",
+            `page debe ser mayor o igual a 1 y limit debe estar entre 1 y ${MAX_LIMIT}`
+        );
+    }
+
+    return { page, limit };
+};
+
 const createDocumentMetadata = (file, documentType) => ({
     originalName: file.originalname,
     filename: file.filename,
@@ -14,8 +42,26 @@ const createDocumentMetadata = (file, documentType) => ({
 });
 
 export const usersService = {
-    getUsers: async () => {
-        return usersRepository.findAll();
+    getUsers: async (query = {}) => {
+        const { page, limit } = parsePagination(
+            query.page,
+            query.limit
+        );
+
+        const { users, total } = await usersRepository.findAll({
+            page,
+            limit,
+        });
+
+        return {
+            users,
+            meta: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
     },
 
     getUserById: async (id) => {

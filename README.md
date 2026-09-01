@@ -17,6 +17,7 @@ API RESTful desarrollada con Express.js y MongoDB para gestionar productos, usua
   - [✅ Verificar funcionamiento](#-verificar-funcionamiento)
   - [🧪 Testing funcional](#-testing-funcional)
   - [📎 Carga de archivos](#-carga-de-archivos)
+  - [🐳 Producción y Docker](#-producción-y-docker)
   - [📝 Documentación con Swagger](#-documentación-con-swagger)
   - [🏗️ Arquitectura en capas](#️-arquitectura-en-capas)
   - [🔌 Endpoints principales](#-endpoints-principales)
@@ -74,6 +75,7 @@ Ejemplo de variables:
 PORT=3001
 MONGODB_URI=mongodb://localhost:27017/shipnow
 NODE_ENV=development
+LOG_LEVEL=debug
 ```
 
 > El proyecto carga el archivo correcto según `NODE_ENV` mediante la configuración ubicada en `src/config` y valida los valores antes de iniciar.
@@ -117,7 +119,7 @@ Respuesta esperada:
 También podés verificar la salud del servidor:
 
 ```bash
-curl http://localhost:30001/api/health
+curl http://localhost:3001/api/health
 ```
 
 ---
@@ -201,6 +203,57 @@ Enviar como `multipart/form-data`:
 - `proof`: archivo PDF, JPG o PNG.
 
 Los errores de archivo usan el formato común de la API: `FILE_REQUIRED`, `INVALID_FILE_TYPE`, `FILE_TOO_LARGE`, `INVALID_DOCUMENT_TYPE` y `FILE_SAVE_ERROR`.
+
+---
+
+## 🐳 Producción y Docker
+
+### Variables de entorno
+
+La API valida al iniciar que existan `PORT`, `MONGODB_URI` y `NODE_ENV`. El nivel de logs se configura con `LOG_LEVEL`; si no se especifica, usa `debug` en desarrollo e `info` en test o producción.
+
+Variables disponibles:
+
+```env
+PORT=3001
+MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/shipnow
+NODE_ENV=production
+LOG_LEVEL=info
+JWT_SECRET=un-secreto-largo-y-aleatorio
+```
+
+Los entornos admitidos son `development`, `test` y `production`. Para producción se puede crear un archivo local `.env.prod`; no debe subirse al repositorio. `JWT_SECRET` queda documentado para una futura implementación de autenticación JWT, pero actualmente no es requerido por la API.
+
+### Endpoints internos
+
+- Los endpoints de mocks y `loggerTest` se montan solamente fuera de producción.
+- Swagger permanece habilitado en `/api/docs/` para consultar el contrato de la API.
+- El health check público está disponible en `/api/health` y devuelve únicamente `status`, `environment`, `uptime` y `timestamp`.
+
+### Docker
+
+Construir la imagen desde la raíz del proyecto:
+
+```bash
+docker build -t shipnow-api .
+```
+
+Ejecutar el contenedor pasando las variables desde un archivo externo:
+
+```bash
+docker run --env-file .env.prod -p 3001:3001 shipnow-api
+```
+
+La API quedará disponible en el puerto `3001`:
+
+```text
+http://localhost:3001/api/health
+http://localhost:3001/api/docs/
+```
+
+Dentro de Docker, `localhost` apunta al propio contenedor. Para MongoDB Atlas usá la URI `mongodb+srv` correspondiente; para una base externa o en otro contenedor, configurá `MONGODB_URI` con el host alcanzable desde el contenedor.
+
+`.dockerignore` evita que la imagen copie `node_modules`, archivos `.env`, `.git`, logs, uploads, coverage y archivos temporales. Los logs se generan en `logs/` y los archivos cargados en `uploads/`; ambas carpetas están excluidas de Git.
 
 ---
 

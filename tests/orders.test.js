@@ -18,6 +18,30 @@ describe("Orders API | Check Tests", () => {
             expect(res.body.status).to.equal("success");
             expect(res.body.payload).to.be.an("array");
         });
+
+        it("debe paginar orders y devolver metadata", async () => {
+            await seedOrderContext();
+            await seedOrderContext();
+
+            const res = await request(app).get("/api/orders?page=1&limit=1");
+
+            expect(res.status).to.equal(200);
+            expect(res.body.payload).to.be.an("array").with.lengthOf(1);
+            expect(res.body.meta).to.deep.equal({
+                page: 1,
+                limit: 1,
+                total: 2,
+                totalPages: 2,
+            });
+        });
+
+        it("debe responder 400 si page o limit son inválidos", async () => {
+            const res = await request(app).get("/api/orders?page=0&limit=51");
+
+            expect(res.status).to.equal(400);
+            expect(res.body.status).to.equal("error");
+            expect(res.body.error.code).to.equal("VALIDATION_ERROR");
+        });
     });
 
     describe("POST /api/orders", () => {

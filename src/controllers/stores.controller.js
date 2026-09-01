@@ -2,8 +2,8 @@ import { storesService } from "../services/stores.service.js";
 
 export const getStores = async (req, res, next) => {
     try {
-        const stores = await storesService.getStores();
-        res.json({ status: "success", payload: stores });
+        const { stores, meta } = await storesService.getStores(req.query);
+        res.json({ status: "success", payload: stores, meta });
     } catch (error) {
         next(error);
     }

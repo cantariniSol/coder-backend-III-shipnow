@@ -18,7 +18,7 @@ function validateEnv() {
         throw new Error("❌ PORT debe ser un número entero entre 1 y 65535");
     }
 
-    const validEnvironments = ["development", "test"];
+    const validEnvironments = ["development", "test", "production"];
     if (!validEnvironments.includes(process.env.NODE_ENV)) {
         throw new Error(
             `❌ NODE_ENV inválido. Valores permitidos: ${validEnvironments.join(", ")}`
@@ -30,6 +30,13 @@ function validateEnv() {
     if (!mongoUriPattern.test(mongoUri)) {
         throw new Error(
             "❌ MONGODB_URI no parece una URI válida de MongoDB"
+        );
+    }
+
+    const validLogLevels = ["fatal", "error", "warn", "info", "http", "debug"];
+    if (!validLogLevels.includes(process.env.LOG_LEVEL)) {
+        throw new Error(
+            `❌ LOG_LEVEL inválido. Valores permitidos: ${validLogLevels.join(", ")}`
         );
     }
 }

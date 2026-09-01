@@ -5,14 +5,11 @@ node_modules/
 .env
 .env.dev
 .env.test
+.env.prod
 
 # Logs
 logs/
 
 # Archivos cargados por usuarios
-uploads/
-
-
-# Archivos 
 uploads/
 
