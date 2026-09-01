@@ -1,5 +1,5 @@
 import winston from "winston";
-import "winston-daily-rotate-file";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import config from "../config/index.js";
@@ -29,6 +29,12 @@ winston.addColors(colors);
 
 const currentLevel = config.LOG_LEVEL;
 const isTestEnvironment = config.NODE_ENV === "test";
+const isDevelopmentEnvironment = config.NODE_ENV === "development";
+const logsDirectory = path.join(__dirname, "../../logs");
+
+if (!isTestEnvironment) {
+    fs.mkdirSync(logsDirectory, { recursive: true });
+}
 
 const consoleFormat = winston.format.combine(
     winston.format.timestamp({
@@ -54,30 +60,22 @@ const fileFormat = winston.format.combine(
 const transports = isTestEnvironment
     ? []
     : [
-        new winston.transports.Console({
-            level: currentLevel,
-            format: consoleFormat,
-        }),
-
-        new winston.transports.DailyRotateFile({
-            filename: path.join(__dirname, "../../logs/application-%DATE%.log"),
-            datePattern: "YYYY-MM-DD",
+        new winston.transports.File({
+            filename: path.join(logsDirectory, "combined.log"),
             level: "info",
-            zippedArchive: true,
-            maxSize: "20m",
-            maxFiles: "14d",
             format: fileFormat,
         }),
-
-        new winston.transports.DailyRotateFile({
-            filename: path.join(__dirname, "../../logs/error-%DATE%.log"),
-            datePattern: "YYYY-MM-DD",
+        new winston.transports.File({
+            filename: path.join(logsDirectory, "error.log"),
             level: "error",
-            zippedArchive: true,
-            maxSize: "20m",
-            maxFiles: "14d",
             format: fileFormat,
         }),
+        ...(isDevelopmentEnvironment
+            ? [new winston.transports.Console({
+                level: currentLevel,
+                format: consoleFormat,
+            })]
+            : []),
     ];
 
 const logger = winston.createLogger({

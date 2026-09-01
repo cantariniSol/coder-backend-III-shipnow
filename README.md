@@ -86,10 +86,6 @@ LOG_LEVEL=debug
 npm run dev
 ```
 
-```bash
-npm run test
-```
-
 El servidor quedará disponible en:
 
 ```text
@@ -135,7 +131,7 @@ El proyecto utiliza testing funcional con:
 ### Ejecución
 
 ```bash
-npm run test
+npm test
 ```
 
 Script configurado en [package.json](package.json):
@@ -232,15 +228,24 @@ Los entornos admitidos son `development`, `test` y `production`. Para producció
 
 ### Docker
 
-Construir la imagen desde la raíz del proyecto:
+El `Dockerfile` es multi-stage y genera una imagen de producción con solo las dependencias necesarias. El modo recomendado levanta la API y MongoDB con Docker Compose; la API espera el health check de la base antes de iniciar:
+
+```bash
+docker compose up --build
+```
+
+Para detener los servicios:
+
+```bash
+docker compose down
+```
+
+Los datos de MongoDB quedan en el volumen `mongodb_data`. Los directorios locales `logs/` y `uploads/` se montan para conservar logs y archivos cargados fuera de la imagen; están ignorados por Git y deben mantenerse sin archivos locales antes de entregar.
+
+También es posible construir y ejecutar solo la API contra una base MongoDB accesible desde el contenedor:
 
 ```bash
 docker build -t shipnow-api .
-```
-
-Ejecutar el contenedor pasando las variables desde un archivo externo:
-
-```bash
 docker run --env-file .env.prod -p 3001:3001 shipnow-api
 ```
 
@@ -253,7 +258,7 @@ http://localhost:3001/api/docs/
 
 Dentro de Docker, `localhost` apunta al propio contenedor. Para MongoDB Atlas usá la URI `mongodb+srv` correspondiente; para una base externa o en otro contenedor, configurá `MONGODB_URI` con el host alcanzable desde el contenedor.
 
-`.dockerignore` evita que la imagen copie `node_modules`, archivos `.env`, `.git`, logs, uploads, coverage y archivos temporales. Los logs se generan en `logs/` y los archivos cargados en `uploads/`; ambas carpetas están excluidas de Git.
+`.dockerignore` evita que la imagen copie `node_modules`, archivos `.env`, `.git`, logs, uploads, coverage y archivos temporales. Los logs se generan en `logs/combined.log` y `logs/error.log`; los archivos cargados se guardan en `uploads/`. Ambos directorios están excluidos de Git.
 
 ---
 

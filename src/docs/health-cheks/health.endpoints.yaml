@@ -1,5 +1,5 @@
 paths:
-  /:
+  /api:
     get:
       tags:
         - Health-check
@@ -13,7 +13,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/RootHealthResponse"
 
-  /health:
+  /api/health:
     get:
       tags:
         - Health-check
